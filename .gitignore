@@ -1,0 +1,7 @@
+*
+!.gitignore
+!background.jpg
+*/Classes
+*/matfile/groundtruth.mat
+*/matfile/gt1801-2000.mat
+*/matfile/chooseImgTrain.mat
