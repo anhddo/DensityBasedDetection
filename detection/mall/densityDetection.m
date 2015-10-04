@@ -11,6 +11,7 @@ v2struct(p);
 if reRun
     delete('temp/*.png');
     try
+
     load(fullfile(matDir,'pDen.mat'));
     catch
         malldensity;

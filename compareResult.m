@@ -1,5 +1,8 @@
 function compareResult
+<<<<<<< HEAD
 initPath;
+=======
+>>>>>>> 073ba7f4d724830ea444387b5958f7ed17224f7c
 rerun=true;
 close all;
 if rerun

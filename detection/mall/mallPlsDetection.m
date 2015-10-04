@@ -1,4 +1,4 @@
-mallPlsTrain
+mallPlsTrain;
 method='pls';
 if reRundetect
     modelName='mallSVMModel';

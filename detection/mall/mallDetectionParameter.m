@@ -16,8 +16,6 @@ xstep=32;ystep=64;
 roi=load(fullfile(datasetDir,'perspective_roi.mat'),'roi');
 roi=roi.roi.mask;
 %pGen: crop pedestrian
-
 pGen=struct('padFullIm',500,'padSize',padSize,'H',96,'isFlip',true,...
     'imageDir',trainPosDir,'gtFile','groundtruth','matDir',matDir);
-   
 p=v2struct;

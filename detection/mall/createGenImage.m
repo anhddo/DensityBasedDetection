@@ -1,6 +1,5 @@
 function createGenImage(p)
 v2struct(p);
-load(pGen.matfile);
 ind=newOriData(:,1)>0;
 boxes=newOriData(ind,:);
 boxes=boxes(:,[1 3:6]);

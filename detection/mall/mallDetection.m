@@ -1,7 +1,9 @@
 % clearvars;
 warning('off');
+
 p=mallDetectionParameter;
 gtDir=fullfile('mall_dataset','gt1801-2000');
+
 createTxtGt;
 
 % modelName='svmstage0';
