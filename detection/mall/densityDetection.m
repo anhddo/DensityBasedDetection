@@ -1,45 +1,43 @@
-function densityDetection
-method='densityMethod';
+function [resultPath,timeResultPath]=densityDetection(method)
+p=mallDetectionParameter;
+v2struct(p);
+resultPath=fullfile('result',[method '.txt']);
+timeResultPath=fullfile(matDir,[method 'time.mat']);
+if exist(fullfile('result',[method,'.txt']),'file'),return;end;
 %%debug para
 % dCenBox=true; dClust=true; dBB=true; dDenIm=true; dDenFilt=true;
 writeBb=false;
 dBB=true;dCenBox=false; dCenPls=false; dClust=false; dDenIm=false; dDenFilt=false;
 colorDen=false;
 reRun=true;
-p=mallDetectionParameter;
-v2struct(p);
+
 if reRun
     delete('temp/*.png');
     try
-
-    load(fullfile(matDir,'pDen.mat'));
+        load(fullfile(matDir,'pDen.mat'));
     catch
         malldensity;
         load(fullfile(matDir,'pDen.mat'));
     end
     pDen.dDenIm=dDenIm; pDen.dDenFilt=dDenFilt; pDen.bandwidth=3;
     pDen.colorDen=colorDen;
+    
     modelName='mallSVMModel';
     modelPath=fullfile(matDir,[modelName '.mat']);
-    %         scaleRange=1./(1.03.^(-15:13));
-    scaleRange=1./(1.04.^(-15:10));
-    if exist(modelPath,'file'),load(modelPath); else mallTrainHogModel(p); end;
+    try load(modelPath) ;catch, mallTrainHogModel(p); end;
+    try load(fullfile(matDir,'BETA.mat'));catch, mallPlsTrain; end
     
-    if ~exist(fullfile(matDir,'BETA.mat'),'file')
-        mallPlsTrain;
-    else
-        load(fullfile(matDir,'BETA.mat'));
-    end
-
+    scaleRange=1./(1.04.^(-15:10));
     pDetect=struct('cellSize',cellSize,'hogType',hogType,'threshold',-2,...
         'fineThreshold',-0.5,'H',H,'W',W,'xstep',xstep,'ystep',ystep,'pad',padSize,...
         'scaleRange',scaleRange,'bPad',16,'dCenBox',dCenBox,'dCenPls',dCenPls);
-   
+    
     n=numel(testFiles);
     bbs=cell(1,n);
     totalTime=0;
+    mkdir(fullfile('temp','density'));
     for i=1:n
-%     for i=1:1
+        %     for i=1:1
         im=loadImage(testFiles{i},imageType);
         im=im.*repmat(roi,1,1,3);
         e=tic;
@@ -54,26 +52,26 @@ if reRun
         e=toc(e);
         disp(e);
         totalTime=totalTime+e;
-        
+        bbs{i}=[i*ones(size(boxes,1),1) boxes];
         if dBB
             %             clf;imshow(im);
             %             if ~isempty(center),hold on;vl_plotpoint(center);end;
             %             print(fullfile('temp',['clust' num2str(i) '.png']),'-dpng');
             clf;imshow(im);
             bbApply('draw',boxes,'g',1);
-            print(fullfile('temp',['box' num2str(i) '.png']),'-dpng');
-%             waitforbuttonpress;
+            print(fullfile('temp','density',['box' num2str(i) '.png']),'-dpng');
+            %             waitforbuttonpress;
         end
-        bbs{i}=[i*ones(size(boxes,1),1) boxes];
+        
     end
     bbs=cat(1,bbs{:});
-    dlmwrite([method '.txt'],bbs);
+    dlmwrite(resultPath,bbs);
     avgtime=totalTime/n;
     fprintf('average time: %f\n',avgtime);
-    save([method 'time'],'avgtime');
+    save(timeResultPath,'avgtime');
 end
 
-[gt,dt]=bbGt('loadAll','gt1801-2000',[method '.txt']);
+[gt,dt]=bbGt('loadAll',gtDir,resultPath);
 [gt,dt] = bbGt('evalRes',gt,dt);
 if writeBb
     for i=1:numel(dt)
@@ -125,7 +123,7 @@ for i=1:nScale
         ftr=getFtrHog(hogIm,x,y,w,h,cellSize);
         if isempty(ftr),continue;end;
         t=calcSVMScore(ftr,SVMModel,'linear');
-        if t>fineThreshold, 
+        if t>fineThreshold,
             boxes1{end+1}=[x-W/2+bPad,y-H/2+bPad,W-2*bPad,H-2*bPad,t,i];
             boxes2{end+1}=[cenPes(1)-W/2+bPad,cenPes(2)-H/2+bPad,W-2*bPad,H-2*bPad,t,i];
             cenCandidate{end+1}=cenPes;
@@ -228,7 +226,7 @@ x=[c r]';
 
 if pDen.dDenFilt
     clf;imshow(den);
-%     hold on;vl_plotpoint(x);
+    %     hold on;vl_plotpoint(x);
     print(fullfile('temp','denImfilt.png'),'-dpng');
 end
 bandwidth=pDen.bandwidth;

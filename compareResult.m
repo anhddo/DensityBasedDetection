@@ -1,25 +1,24 @@
 function compareResult
-<<<<<<< HEAD
 initPath;
-=======
->>>>>>> 073ba7f4d724830ea444387b5958f7ed17224f7c
 rerun=true;
 close all;
+denMethod='densityMethod';
+plsMethod='pls';
 if rerun
-    densityDetection;
-    mallPlsDetection;
+    [denResult,denTimePath]=densityDetection(denMethod);
+    [plsResult,plsTimePath]=mallPlsDetection(plsMethod);
 end
 clf;
-[recall,precision]=PRplot('denWithPls26Scale.txt');
+[recall,precision]=PRplot(denResult);
 plot(precision,recall,'r','LineWidth',2);
-[recall,precision]=PRplot('pls26scale.txt');
+[recall,precision]=PRplot(plsResult);
 hold on; plot(precision,recall,'b','LineWidth',2);
 xlabel('precision'); ylabel('recall');
 legend('Proposed method','PLS');
 print(fullfile('temp','pr.png'),'-dpng');
-load('densityMethodtime');
+load(denTimePath);
 denTime=avgtime;
-load('plstime');
+load(plsTimePath);
 plsTime=avgtime;
 % figure;
 % h=bar([0 1],[1 3]);
@@ -34,7 +33,13 @@ ylabel('Time(s)');
 print(fullfile('temp','time.png'),'-dpng');
 end
 function [recall,precision]=PRplot(txtResult)
-[gt,dt]=bbGt('loadAll','gt1801-2000',txtResult);
+mallParameter;
+createTxtGt(gtDir,matDir);
+[gt,dt]=bbGt('loadAll',gtDir,txtResult);
 [gt,dt] = bbGt('evalRes',gt,dt);
 [recall,precision,~,~] = bbGt('compRoc',gt,dt,0);
+end
+function initPath
+addpath(genpath('detection'));
+addpath(genpath('density'));
 end

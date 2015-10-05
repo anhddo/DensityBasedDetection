@@ -61,7 +61,8 @@ handles.currentCol = 1;
 handles.saveReminderCounter = 0;
 handles.name_append='';
 handles.path2Folder=get(handles.folderPath,'String');
-handles.matfile=fullfile('..','matfile','groundtruth.mat');
+% handles.matfile=fullfile('..','matfile','groundtruth.mat');
+handles.matfile=fullfile('..','matfile','newOriDataFixed.mat');
 if (exist(handles.matfile,'file'))
     load(handles.matfile);
     handles.data = newOriData;

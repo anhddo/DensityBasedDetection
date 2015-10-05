@@ -7,6 +7,7 @@ reRunDetect=true;
 svmTool='fitcsvm';
 hogType='piotr';
 imageType='rgb';
+delete(fullfile(framesDir,'Thumbs.db'));
 testFiles=bbGt('getFiles',{framesDir});
 testFiles=testFiles(1801:end);
 H=128; W=64;

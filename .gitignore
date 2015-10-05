@@ -1,6 +1,9 @@
 *
 !.gitignore
 !background.jpg
+!*.m
+!*.txt
+!*.fig
 */Classes
 */matfile/groundtruth.mat
 */matfile/gt1801-2000.mat

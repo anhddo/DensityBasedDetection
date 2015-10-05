@@ -1,6 +1,7 @@
+function createTxtGt(gtDir,matDir)
 if ~exist(gtDir,'dir')
     mkdir(gtDir);
-    load('gt1801-2000');
+    load(fullfile(matDir,'gt1801-2000.mat'));
     ind=newOriData(:,1)>=0;
     boxes=newOriData(ind,[1 3:6]);
     boxes(:,2:5)=convertBB(boxes(:,2:5)','xywh',[]);
