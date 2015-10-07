@@ -39,7 +39,3 @@ createTxtGt(gtDir,matDir);
 [gt,dt] = bbGt('evalRes',gt,dt);
 [recall,precision,~,~] = bbGt('compRoc',gt,dt,0);
 end
-function initPath
-addpath(genpath('detection'));
-addpath(genpath('density'));
-end
