@@ -16,5 +16,3 @@ estimationPara.totalTime=0;
 data.estimationParameter=estimationPara;
 data.detectionParameter=initDensityDetection;
 data.detectionParameter.time=[];
-
-

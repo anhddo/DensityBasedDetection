@@ -32,9 +32,6 @@ for i=1:size(bbs,1)
     bb=bbs(i,1:4);
     rectangle('Position',bb,'Parent',axes3,'EdgeColor','g');
 end
-
-% hs=bbApply('draw',bbs,'g',1);
-% set(hs,'Parent',axes3);
 end
 %%
 function data=plotEstimateGraph(data,handles)
@@ -74,7 +71,5 @@ ylabel(axes1,'count');
 legend(axes1,'estimation','groundtruth','Location','southwest');
 
 axes2=handles.axes2;
-% denIm=mat2gray(denIm);
-% imshow(denIm,'Parent',axes2);
 imagesc(denIm,'Parent',axes2);
 end

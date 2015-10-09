@@ -11,7 +11,6 @@ if dClust
     clf;imshow(im); hold on; vl_plotpoint(pesClust,'.r','MarkerSize',20);
     print(fullfile('temp',['meanshift' num2str(i) '.png']),'-dpng');
 end
-boxes=denDetect(im,pesClust,SVMModel,BETA,pDetect);
 time=toc(time);
 
 if dBB
