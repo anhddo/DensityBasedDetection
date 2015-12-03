@@ -1,23 +1,23 @@
-function imFtr=convertFeature(imPrimaryFeature,pr)
+function imFtr=convertFeature(imPrimaryFeature,opts)
 [m,n,p]=size(imPrimaryFeature);
 X=zeros(m*n,p);
 for i=1:p
     X(:,i)=reshape(imPrimaryFeature(:,:,i),1,[]);
 end
-leafPredicted=zeros(pr.nTrees,size(X,1));
-for i=1:pr.nTrees
-    [~,leafPredicted(i,:)]=predict(pr.Forest{i},X);
+leafPredicted=zeros(opts.pDen.nTrees,size(X,1));
+for i=1:opts.pDen.nTrees
+    [~,leafPredicted(i,:)]=predict(opts.pDen.Forest{i},X);
 end
 
-dataFtr=zeros(size(imPrimaryFeature,pr.nTrees),size(X,1));
-for i=1:pr.nTrees
-    leafMapTreei=pr.leafMap(i,:);
+dataFtr=zeros(size(imPrimaryFeature,opts.pDen.nTrees),size(X,1));
+for i=1:opts.pDen.nTrees
+    leafMapTreei=opts.pDen.leafMap(i,:);
     dataFtr(i,:)=leafMapTreei(leafPredicted(i,:));
 end
 % convert datfeature to [MxNxL] MxN is image size and L is number of
 % non-zero element
-imFtr=zeros(m,n,pr.nTrees);
-for i=1:pr.nTrees
+imFtr=zeros(m,n,opts.pDen.nTrees);
+for i=1:opts.pDen.nTrees
     imFtr(:,:,i)=reshape(dataFtr(i,:),m,n);
 end
 end

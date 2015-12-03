@@ -1,4 +1,5 @@
 function compareResult
+displayInline;
 initPath;
 rerun=true;
 close all;
@@ -34,7 +35,7 @@ print(fullfile('temp','time.png'),'-dpng');
 end
 function [recall,precision]=PRplot(txtResult)
 mallParameter;
-createTxtGt(gtDir,matDir);
+createTxtGt(gtDir,gtTestFile);
 [gt,dt]=bbGt('loadAll',gtDir,txtResult);
 [gt,dt] = bbGt('evalRes',gt,dt);
 [recall,precision,~,~] = bbGt('compRoc',gt,dt,0);

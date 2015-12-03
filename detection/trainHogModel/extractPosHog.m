@@ -1,16 +1,13 @@
 %% Get Positive vector
-function trainPos=extractPosHog(p)
-displayInline;
-v2struct(p);
+function trainPos=extractPosHog(opts)
 fprintf('Gathering positive subwindows:\n ');
 trainPos={};
-trainPosFiles=bbGt('getFiles',{trainPosDir});
+trainPosFiles=bbGt('getFiles',{opts.pGenSVM.trainPosDir});
 n=numel(trainPosFiles);
 for i=1:n
-    im=loadImage(trainPosFiles{i},imageType);
-    subHog=computeHog(im,hogType);
+    im=loadImage(trainPosFiles{i},opts.pDetect.imageType);
+    subHog=computeHog(im,opts.pDetect.hogType);
     trainPos{end+1}=subHog;
-    displayInline(sprintf('%d/%d\n',i,n));
 end
 trainPos=cat(4,trainPos{:});
 trainPos=reshape(trainPos,[],size(trainPos,4));

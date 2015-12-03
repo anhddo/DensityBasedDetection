@@ -1,30 +1,39 @@
-function createPadImage(trainposDir,boxes, imPath,pGen)
+function createPadImage(trainposDir,boxes, imPath,opts)
 %% create train pos
-v2struct(pGen);
-SH=H+2*padSize;SW=SH/2;
-load(fullfile(matDir,'chooseImgTrain.mat'));
+SH=opts.H+2*opts.padSize;SW=SH/2;
+% load(fullfile(matDir,'chooseImgTrain.mat'));
 for i=1:numel(imPath)
     im=im2single(imread(imPath{i}));
-    im=imPad(im,padFullIm,'replicate');
+    im=imPad(im,opts.padFullIm,'replicate');
     
     box1=boxes{i};
-    box1=box1+padFullIm;
+    box1=box1+opts.padFullIm;
     
     for j=1:size(box1,2)
         xcenter=(box1(3,j)+box1(1,j))/2; ycenter=(box1(4,j)+box1(2,j))/2;
         h=box1(4,j)-box1(2,j);
-        H1=h/H*SH; W1=H1/2;
-        ymin=ycenter-H1/2; ymax=ycenter+H1/2; xmin=xcenter-W1/2;xmax=xcenter+W1/2;
+        H1=h/opts.H*SH; W1=H1/2;
+        ymin=round(ycenter-H1/2); ymax=round(ycenter+H1/2);
+        xmin=round(xcenter-W1/2);xmax=round(xcenter+W1/2);
 %         nPes=countPesdestrianInBox(box1,xmin,xmax,ymin,ymax);
 %         if nPes>1, continue;end;
         subim=im(ymin:ymax,xmin:xmax,:);
         subim=imresize(subim,[SH SW]);
         imgName=sprintf('%d_%d.jpg',i,j);
-        if ~isChosen(imgName,chooseImgTrain),continue;end;
-        imwrite(subim,fullfile(trainposDir,imgName));
-        if isFlip,
-            imwrite(fliplr(subim),fullfile(trainposDir,sprintf('%d_%d_flip.jpg',i,j)));
+%         if ~isChosen(imgName,chooseImgTrain),continue;end;
+% check imgName match any filename in plsPatchTrain
+        if isempty(opts.choosedImg)
+            match=1;
+        else
+            func=@(x) strcmp(x,imgName);
+            match=cellfun(func,opts.choosedImg);
         end;
+        if sum(match)
+            imwrite(subim,fullfile(trainposDir,imgName));
+            if opts.isFlip,
+                imwrite(fliplr(subim),fullfile(trainposDir,sprintf('%d_%d_flip.jpg',i,j)));
+            end;
+        end
     end
 end
 end

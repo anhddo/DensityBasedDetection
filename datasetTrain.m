@@ -1,0 +1,10 @@
+dataset='mall';
+opts=allParameter(dataset);
+pDenPath=fullfile(opts.dtsetOpts.matDir,sprintf('%spDen.mat',dataset));
+forestPath=fullfile(opts.dtsetOpts.matDir,sprintf('%sForest.mat',dataset));
+densityTraining(opts,pDenPath,forestPath);
+% [resultPath,timeResultPath]=densityDetection('densityVivo','vivo');
+modelPath=fullfile(opts.dtsetOpts.matDir,sprintf('%sSVMModel.mat',dataset));
+betaPath=fullfile(opts.dtsetOpts.matDir,sprintf('%sBETA.mat',dataset));
+try load(modelPath) ;catch, trainSVMModel(opts,modelPath); load(modelPath);end;
+try load(betaPath);catch, plsTrain(opts); load(betaPath);end;

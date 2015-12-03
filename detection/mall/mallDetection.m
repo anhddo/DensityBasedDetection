@@ -8,7 +8,7 @@ createTxtGt;
 
 % modelName='svmstage0';
 modelName='mallSVMModel';
-if ~exist(sprintf('%s.mat',modelName),'file') mallTrainHogModel(p);end;
+if ~exist(sprintf('%s.mat',modelName),'file') trainSVMModel(p);end;
 % [gt,dt]=bbGt('loadAll',gtDir,'mallsl2.txt');
 % [gt1,dt1] = bbGt('evalRes',gt,dt);
 gt=bbGt('loadAll',gtDir);

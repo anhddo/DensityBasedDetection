@@ -61,7 +61,8 @@ handles.currentCol = 1;
 handles.saveReminderCounter = 0;
 handles.name_append='';
 handles.path2Folder=get(handles.folderPath,'String');
-handles.matfile=fullfile('..','matfile','groundtruth.mat');
+% handles.matfile=fullfile('..','matfile','groundtruth.mat');
+handles.matfile=fullfile('..','matfile','vivoTrainDensityGt.mat');
 % handles.matfile=fullfile('..','matfile','newOriData_anh.mat');
 if (exist(handles.matfile,'file'))
     load(handles.matfile);
@@ -202,7 +203,7 @@ function btnNext_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles = guidata(hObject);
-handles.imageID = handles.imageID+5;
+handles.imageID = handles.imageID+1;
 
 %Load image and display bounding/ori information
 imgName = ['seq_' sprintf('%06d', handles.imageID) '.jpg'];
@@ -225,7 +226,7 @@ function btnPrevious_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles = guidata(hObject);
-handles.imageID = handles.imageID-5;
+handles.imageID = handles.imageID-1;
 if (handles.imageID <= 0)
     handles.imageID = 1;
 end
@@ -265,7 +266,7 @@ if(handles.currentRow <=0 )
 end
 handles.currentCol = 1;
 imgName = ['seq_' sprintf('%06d', handles.imageID) '.jpg'];
-fullPath = [handles.path2Folder '\' imgName];
+fullPath = fullfile(handles.path2Folder ,imgName);
 img = imread(fullPath);
 hold off;
 imageHandle = imshow(img);
@@ -280,9 +281,10 @@ guidata(hObject, handles);
 % --- Executes on button press in btnSave.
 function btnSave_Callback(hObject, eventdata, handles)
 handles.saveReminderCounter = 0;
-set(handles.saveReminder, 'String', '');
+% set(handles.saveReminder, 'String', '');
 newOriData = handles.data;
-matfile=get(handles.matfile,'String');
+% matfile=get(handles.matfile,'String');
+matfile=handles.matfile;
 save(matfile,'newOriData');
 guidata(hObject, handles);
 % hObject    handle to btnSave (see GCBO)

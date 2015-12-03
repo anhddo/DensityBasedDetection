@@ -1,5 +1,6 @@
 % function ftrs=extractFeature(i,img,pr,train)
-function ftrs=extractFeature(im,pr)
+function ftrs=extractFeature(im,opts)
+pr=opts.pDen;
 imgray=rgb2gray(im);
 % staticBg=(medfilt2(imgray,pr.medSize));
 % diffBg=imgray-staticBg; absDiffBg=abs(diffBg);

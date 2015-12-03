@@ -4,6 +4,10 @@
 !background.jpg
 !*.m
 !*.fig
-*/matfile/groundtruth.mat
-*/matfile/gt1801-2000.mat
-*/matfile/chooseImgTrain.mat
+!mall_dataset/groundtruth.mat
+!mall_dataset/gt1801-2000.mat
+!mall_dataset/chooseImgTrain.mat
+!mall_dataset/denTrainGT.mat
+!mall_dataset/plsPatchTrain.mat
+!vivodataset/vivoTrainGt.mat
+!vivodataset/vivoTrainDensityGt.mat

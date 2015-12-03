@@ -1,5 +1,5 @@
 function initPath
-addpath(genpath('detection'));
-addpath(genpath('density'));
-addpath(genpath('GUI'));
+addpath(genpath(fullfile(pwd,'detection')));
+addpath(genpath(fullfile(pwd,'density')));
+addpath(genpath(fullfile(pwd,'GUI')));
 end

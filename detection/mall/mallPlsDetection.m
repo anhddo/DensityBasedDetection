@@ -12,7 +12,7 @@ showBB=false;
 
 modelName='mallSVMModel';
 modelPath=fullfile(matDir,[modelName '.mat']);
-try load(modelPath) ;catch, mallTrainHogModel(p); end;
+try load(modelPath) ;catch, trainSVMModel(p); end;
 scaleRange=1./(1.04.^(-15:10));
 pPls=struct('cellSize',cellSize,'hogType',hogType,'threshold',-2,...
     'fineThreshold',0,'H',H,'W',W,'xstep',xstep,'ystep',ystep,'pad',padSize,...
@@ -42,6 +42,7 @@ for i=1:n
     end
 end
 bbs=cat(1,bbs{:});
+bbs(:,2:5)=bbApply('resize',bbs(:,2:5),1,0,0.5);
 dlmwrite(resultPath,bbs);
 avgtime=totalTime/n;
 fprintf('average time: %f\n',avgtime);

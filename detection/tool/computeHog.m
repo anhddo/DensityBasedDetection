@@ -4,5 +4,5 @@ if strcmp(type,'vlfeat')
 elseif strcmp(type,'dalal')
     feature=vl_hog(im,8,'variant','dalaltriggs');
 elseif strcmp(type,'piotr')
-    feature=hog(im);
+    feature=hog(single(im));
 end
