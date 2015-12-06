@@ -1,6 +1,24 @@
 function demoFunc(obj,evt,figureObject)
-% handles=guidata(figureObject);
+setLayout;
+opts=get(obj,'UserData');
+[data.estimationParameter]=plotEstimateGraph(data.video,data.estimationParameter,handles);
+setFigureHandle('attribute',figureObject,'frameId','String',opts.gui.frameId);
+opts=drawDetection(opts,figureObject);
+if ~isStepByStep(figureObject)
+    plotTime(opts.gui.timePerIm,figureObject);
+    opts.gui.frameId=opts.gui.frameId+opts.gui.framestep;
+end;
+set(obj,'UserData',opts);
 %%
+
+    function setLayout
+        if isStepByStep(figureObject)
+            setAxesPos('2x1',figureObject);
+            enableGroupRbtnAndStopTimer
+        else
+            setAxesPos('2x2',figureObject);
+        end;
+    end
     function enableGroupRbtnAndStopTimer
         
 %         handles.grouprbtn.Children=setGroupAttribute(handles.grouprbtn.Children,'Enable','on');
@@ -8,28 +26,7 @@ function demoFunc(obj,evt,figureObject)
         timer=timerfind('Tag','Timer');
         stop(timer);
     end
-
 %%
-if isStepByStep(figureObject)
-    setAxesPos('2x1',figureObject);
-    enableGroupRbtnAndStopTimer
-else
-    setAxesPos('2x2',figureObject,handles);
-end;
-
-opts=get(obj,'UserData');
-% [data.estimationParameter]=plotEstimateGraph(data.video,data.estimationParameter,handles);
-setFigureHandle('attribute',figureObject,'frameId','String',opts.frameid);
-% set(handles.frameId,'String',data.frameid);
-opts.video.CurrentTime=(opts.frameid+1)/opts.video.FrameRate;
-img=readFrame(opts.video);
-opts=drawDetection(img,opts,figureObject);
-% time=data.detectionParameter.time(idx);
-if ~isStepByStep(figureObject)
-    plotTime(opts.timePerIm,handles);
-    opts.frameid=opts.frameid+opts.framestep;
-end;
-set(obj,'UserData',opts);
 end
 
 function v=isStepByStep(hObject)
@@ -38,7 +35,7 @@ sbsBtn=findobj(handles.controlPanel,'Tag','stepByStepCb');
 v=get(sbsBtn,'Value');
 end
 
-function plotTime(time,handles)
+function plotTime(time,figureObject)
 avgTime=mean(time);
 if numel(time)>5
     time=time(end-4:end);
@@ -54,13 +51,14 @@ function axes=getAxes(figureObject,i)
 handles=guidata(figureObject);
 axes=handles.axesObjs(i);
 end
-function opts=drawDetection(img,opts,figureObject)
+function opts=drawDetection(opts,figureObject)
+img=getDatasetImg;
 [time,bbs,dispStuff]=denDectectByFrame(img,opts);
 if isStepByStep(figureObject)
     imshow(img,'Parent',getAxes(figureObject,1));
 else
-    [opts.denEst,opts.timePerIm]=drawEst(getAxes(figureObject,1),dispStuff,opts.denEst,...
-        opts.timePerIm,time,estimationParameter);
+    % auto run
+    opts=drawEst(getAxes(figureObject,1),dispStuff,opts,time);
     %draw detection box
     imshow(img,'Parent',getAxes(figureObject,3));
     for i=1:size(bbs,1)
@@ -85,6 +83,10 @@ elseif dispPls
     catch
     end
 end
+%%
+    function img=getDatasetImg
+        img=imread(fullfile(opts.dtsetOpts.framesDir,sprintf('seq_%06d.jpg',opts.gui.frameId)));
+    end
 end
 
 function drawPls(cAxes,img,boxes)
@@ -93,7 +95,7 @@ function drawPls(cAxes,img,boxes)
         x=box(1)+box(3)/2;
         y=box(2)+box(4)/2;
     end
-    function [subIm,left,top,right,bot]=extractAreaContainBothBox(candidateBox,plsBox,pad)
+    function [subIm,left,top,right,bot]=extractAreaContainBothBox(pad)
         left=min(candidateBox(1),plsBox(1))-pad;
         right=max(candidateBox(1)+candidateBox(3), plsBox(1)+plsBox(3))+pad;
         top=min(candidateBox(2),plsBox(2))-pad;
@@ -117,14 +119,20 @@ function drawPls(cAxes,img,boxes)
         hold(cAxes,'on');
         plot(cAxes,[x1 x2],[y1 y2],'g');
     end
+
+    function rescaleCandidateBoxAndPlsBox
+        candidateBox=candidateBox*scale;
+        plsBox=plsBox*scale;
+    end
 %%
 candidateBox=boxes.canBox;
 plsBox=boxes.plsBox;
-[subIm,left,top,~,~]=extractAreaContainBothBox(candidateBox,plsBox,10);
-
+[subIm,left,top,~,~]=extractAreaContainBothBox(10);
+scale=size(img,1)/size(subIm,1);
+subIm=imResample(subIm,scale);
 candidateBox=shiftBox(candidateBox,left,top);
 plsBox=shiftBox(plsBox,left,top);
-
+rescaleCandidateBoxAndPlsBox;
 draw(cAxes,candidateBox,plsBox);
 
 end
@@ -136,19 +144,18 @@ dispClust=get(handles.clustrbtn,'Value');
 dispPls=get(handles.plsrbtn,'Value');
 end
 
-function [denEst,timePerIm]=drawEst(axes1,dispStuff,denEst,timePerIm,time,estimationParameter)
-timePerIm=[timePerIm time];
-dispStuff.denIm=dispStuff.denIm.*estimationParameter.pMapN;
-denEst=[denEst sum(dispStuff.denIm(:))];
+function opts=drawEst(axes1,dispStuff,opts,time)
+opts.gui.timePerIm=[opts.gui.timePerIm time];
+denEst=[opts.gui.denEst sum(dispStuff.denIm(:))];
 
 cla(axes1);
 lw=2;
-try plot1=denEst(end-plotEstRange+1:end);catch, plot1=denEst;end;
+try plot1=denEst(end-opts.gui.plotEstRange+1:end);catch, plot1=denEst;end;
 plot(axes1,plot1,'b','LineWidth',lw);
 hold(axes1,'on');
-if isfield(estimationParameter,'count')
-    count=estimationParameter.count;
-    plot2=count(frameid-numel(plot1)+1:frameid)';
+if isfield(opts.pDen,'count')
+    count=opts.pDen.count;
+    plot2=count(opts.gui.frameId-numel(plot1)+1:opts.gui.frameId)';
     plot(axes1,plot2,'r','LineWidth',lw);
     xlabel(axes1,'frames');
     ylabel(axes1,'count');

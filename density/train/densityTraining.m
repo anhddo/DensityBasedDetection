@@ -1,11 +1,9 @@
-function densityTraining(opts,pDenPath,forestPath)
-try
-    load(pDenPath);
-catch
+function densityTraining(opts)
+if ~exist(opts.dtsetOpts.pDenPath,'file')
     %generate feature channels and density images
     [opts.pDen.ftrs,opts.pDen.denGts,opts.pDen.ims]=genFtrAndDen(opts);
-    if(exist(forestPath,'file'))
-        loadFile=load(forestPath);Forest=loadFile.Forest;
+    if(exist(opts.dtsetOpts.forestPath,'file'))
+        loadFile=load(opts.dtsetOpts.forestPath);Forest=loadFile.Forest;
     else
         %gen train data for random forest
         [X,Y]=genArrayForTreeBaggerLearning(opts);
@@ -14,7 +12,7 @@ catch
         Forest=TreeBagger(opts.pDen.nTrees,X,Y,'method','regression','NVarToSample','all','minLeaf',opts.pDen.minLeaf);
         Forest=Forest.compact();
         Forest=Forest.Trees;
-        save(forestPath,'Forest');
+        save(opts.dtsetOpts.forestPath,'Forest');
     end
     
     opts.pDen.Forest=Forest; clear Forest;
@@ -32,7 +30,7 @@ catch
     
 %     clear opts.pDen.trainFeatures opts.pDen.trainWeights opts.pDen.weightMap pDen.denGtPad;
     pDen=opts.pDen;
-    save(pDenPath,'pDen');
+    save(opts.dtsetOpts.pDenPath,'pDen');
 end
 end
 function [X,Y]=genArrayForTreeBaggerLearning(opts)

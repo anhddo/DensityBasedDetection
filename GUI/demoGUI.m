@@ -53,11 +53,11 @@ function demo_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to demo (see VARARGIN)
 
 % Choose default command line output for demo
+initPath;
 handles.output = hObject;
 dataTag=getChoosedDataset(handles);
-opts=GUIinitData(dataTag,hObject);
-% handles.axes=[];
-% setAxesPos('1',hObject);
+datasetTrain(dataTag);
+opts=GUIinitData(dataTag);
 handles.timer=timer('ExecutionMode','fixedSpacing','Period',0.001,...
     'TimerFcn',{@demoFunc,hObject},'UserData',opts,'Tag','Timer');
 % Update handles structure
@@ -239,26 +239,20 @@ function Next_Callback(hObject, eventdata, handles)
 ajustFrameNumber(handles,'inc');
 
 function ajustFrameNumber(handles,type)
-data=get(handles.timer,'UserData');
+opts=get(handles.timer,'UserData');
 if strcmp(type,'inc')
-    data.frameid=data.frameid+data.framestep;
+    opts.gui.frameId=opts.gui.frameId+opts.gui.framestep;
 elseif strcmp(type,'dec')
-    data.frameid=data.frameid-data.framestep;
+    opts.gui.frameId=opts.gui.frameId-opts.framestep;
 end
-set(handles.timer,'UserData',data);
+set(handles.timer,'UserData',opts);
 start(handles.timer);
 
 function stepByStepCb_Callback(hObject, eventdata, handles)
-v=get(hObject,'Value');
-if v,
-    handles.axes=setAxesPos('2x2',handles.axes);
-else
-    handles.axes=setAxesPos('2x1',handles.axes);
-end;
-guidata(hObject,handles);
+
 function frameId_Callback(hObject, eventdata, handles)
 data=get(handles.timer,'UserData');
-data.frameid=str2num(get(hObject,'String'));
+opts.gui.frameId=str2num(get(hObject,'String'));
 set(handles.timer,'UserData',data);
 % set(handles.timer,'TimerFcn',{@demoFunc,handles});
 start(handles.timer);

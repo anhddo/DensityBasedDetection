@@ -1,4 +1,5 @@
-function SVMModel=trainSVMModel(opts,modelName)
+function SVMModel=trainSVMModel(opts)
+if exist(opts.dtsetOpts.SvmModelPath,'file'),return;end;
 % try rmdir(opts.pGenSVM.trainPosDir,'s');catch, end;
 if ~exist(opts.pGenSVM.trainPosDir,'dir'),
     createGenImage(opts.pGenSVM.trainPosDir,opts.pGenSVM);
@@ -17,11 +18,12 @@ if ~exist(trainNegName,'file'),
 else
     load(trainNegName);
 end;
-if ~exist('svmstage0.mat','file')
+stage0Path=fullfile(opts.dtsetOpts.matDir,'svmstage0.mat');
+if ~exist(stage0Path,'file')
     SVMModel=trainSVMModel0(trainPos,trainNeg,opts);
-    save('svmstage0','SVMModel');
+    save(stage0Path,'SVMModel');
 else
-    load('svmstage0');
+    load(stage0Path);
 end
 nRetrain=1;
 neg=trainNeg;
@@ -32,10 +34,10 @@ for i=1:nRetrain
     if size(hardNeg,2)>0
         neg=[neg hardNeg];
         SVMModel=trainSVMModel0(trainPos,neg,opts);
-        save(sprintf('svmstage%d',i),'SVMModel');
+        save(fullfile(opts.dtsetOpts.matDir,sprintf('svmstage%d',i)),'SVMModel');
     end
 end
-save(modelName,'SVMModel');
+save(opts.dtsetOpts.SvmModelPath,'SVMModel');
 end
 
 function features=getHardNeg(opts,SVMModel)

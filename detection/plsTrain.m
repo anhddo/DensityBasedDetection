@@ -1,7 +1,6 @@
 function plsTrain(opts)
-filePath=fullfile(opts.dtsetOpts.matDir,sprintf('%sBETA.mat',opts.datasetName));
-
-% if exist(filePath,'file'),return;end;
+if exist(opts.dtsetOpts.BetaPath,'file'),return;end;
+% if exist(opts.dtsetOpts.BetaPath,'file'),return;end;
 % warning('off');
 % 
 % 
@@ -31,7 +30,7 @@ fprintf('pls training\n');
 [BETA,rmsTrain,rmsTest]=plsTraining(choosenPlsTrain,testPlsImageDir,opts);
 fprintf('rms train [%f %f]\n',rmsTrain(1),rmsTrain(2));
 fprintf('rms test [%f %f]\n',rmsTest(1),rmsTest(2));
-save(filePath,'BETA');
+save(opts.dtsetOpts.BetaPath,'BETA');
 end
 
 function [BETA,rms1,rms2]=plsTraining(trainFolder,testFolder,p)

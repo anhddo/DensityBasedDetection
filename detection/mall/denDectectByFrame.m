@@ -195,34 +195,36 @@ end
 %%
 function [centers,denIm0,noiseReduce]=pedestrianCluster(img0,opts)
 img=img0(1:opts.pDen.spacing:end,1:opts.pDen.spacing:end,:);
-denIm0=mallden(img,opts);
-% if pDen.colorDen
-%     colormap('jet');
-%     clf;imagesc(denIm0);
-%     print(fullfile('temp','denImage.png'),'-dpng');
-% end
-% den=imfilter(den,fspecial('gaussian',[5 5],3));
-denIm=denIm0;
+denIm=mallden(img,opts);
+scale=size(img0,1)/size(denIm,1);
+denIm0=imResample(denIm,scale,'nearest');
+
+
 t=max(denIm(:))*0.0001;
 denIm(denIm<t)=0;
 denIm(denIm>=t)=1;
 
-% if pDen.dDenIm
-%     clf;imshow(denIm);
-%     print(fullfile('temp','denIm.png'),'-dpng');
-% end
-
 noiseReduce=medfilt2(denIm,[3 3]);
 [r,c]=find(noiseReduce);
+noiseReduce=imResample(noiseReduce,scale,'nearest');
 x=[c r]';
+[centers,~,~] = MeanShiftCluster(x,opts.pCLustering.bandwidth);
+centers=centers*opts.pDen.spacing;
 
+if opts.debugOpts.colorDen
+    colormap('jet');
+    clf;imagesc(denIm0);
+    print(fullfile('temp','denImage.png'),'-dpng');
+end
+if opts.debugOpts.dDenIm
+    clf;imshow(denIm);
+    print(fullfile('temp','denIm.png'),'-dpng');
+end
 if opts.debugOpts.dDenFilt
     clf;imshow(noiseReduce);
     %     hold on;vl_plotpoint(x);
     print(fullfile('temp','denImfilt.png'),'-dpng');
 end
-[centers,~,~] = MeanShiftCluster(x,opts.pCLustering.bandwidth);
-centers=centers*opts.pDen.spacing;
 end
 %%
 function testpedestrianCluster
