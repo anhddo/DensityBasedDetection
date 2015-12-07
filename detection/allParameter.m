@@ -34,11 +34,14 @@ pDetect=struct('cellSize',cellSize,'threshold',-2,'hogType','piotr',...
     'scaleRange',dtsetOpts.scaleRange,'imageType','rgb','svmTool','fitcsvm');
 isCreateTestTxtGt=false;
 
-if nargin>1,pDen=initDensityParameter(datasetName,pDenOpts);
-else, pDen=initDensityParameter(datasetName);end
+if nargin>1,
+    pDenOpts=varargin{2};
+    pDen=initDensityParameter(datasetName,pDenOpts);
+else, 
+    pDen=initDensityParameter(datasetName);
+end
 
 dtsetOpts=rmfield(dtsetOpts,{'scaleRange','plsChoosedImg','svmChoosedImg'});
-
 
 debugOpts=struct('writeBb',true,'dBB',false,'dCenBox',false,...
     'dCenPls',false,'dClust',false,'dDenIm',false,'dDenFilt',false,...

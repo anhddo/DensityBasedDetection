@@ -1,7 +1,6 @@
 function demoFunc(obj,evt,figureObject)
 setLayout;
 opts=get(obj,'UserData');
-[data.estimationParameter]=plotEstimateGraph(data.video,data.estimationParameter,handles);
 setFigureHandle('attribute',figureObject,'frameId','String',opts.gui.frameId);
 opts=drawDetection(opts,figureObject);
 if ~isStepByStep(figureObject)
@@ -69,7 +68,9 @@ end
 
 [dispDen,dispNoiseReduce,dispClust,dispPls]=getOptionValue(figureObject);
 if dispDen
-    imshow(dispStuff.denIm,[],'Parent',getAxes(figureObject,2));
+    scale=size(img,1)/size(dispStuff.denIm,1);
+    denImdraw=imResample(dispStuff.denIm,scale,'nearest');
+    imshow(denImdraw,[],'Parent',getAxes(figureObject,2));
 elseif dispNoiseReduce
     imshow(dispStuff.noiseReduce,[],'Parent',getAxes(figureObject,2));
 elseif dispClust
@@ -146,7 +147,8 @@ end
 
 function opts=drawEst(axes1,dispStuff,opts,time)
 opts.gui.timePerIm=[opts.gui.timePerIm time];
-denEst=[opts.gui.denEst sum(dispStuff.denIm(:))];
+denEst=opts.gui.denEst;
+denEst=[denEst sum(dispStuff.denIm(:))];
 
 cla(axes1);
 lw=2;
@@ -161,6 +163,7 @@ if isfield(opts.pDen,'count')
     ylabel(axes1,'count');
     legend(axes1,'estimation','groundtruth','Location','southwest');
 end
+opts.gui.denEst=denEst;
 end
 
 function groupHandles=setGroupAttribute(groupHandles,attribute,value)
