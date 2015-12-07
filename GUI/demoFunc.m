@@ -1,7 +1,7 @@
 function demoFunc(obj,evt,figureObject)
 setLayout;
 opts=get(obj,'UserData');
-setFigureHandle('attribute',figureObject,'frameId','String',opts.gui.frameId);
+updateFrameIdOnGUI;
 opts=drawDetection(opts,figureObject);
 if ~isStepByStep(figureObject)
     plotTime(opts.gui.timePerIm,figureObject);
@@ -9,7 +9,9 @@ if ~isStepByStep(figureObject)
 end;
 set(obj,'UserData',opts);
 %%
-
+    function updateFrameIdOnGUI
+        setFigureHandle('attribute',figureObject,'frameId','String',opts.gui.frameId);
+    end
     function setLayout
         if isStepByStep(figureObject)
             setAxesPos('2x1',figureObject);

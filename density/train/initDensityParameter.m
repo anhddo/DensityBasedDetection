@@ -27,7 +27,7 @@ end
 bggray=rgb2gray(imread(fullfile(dtsetOpts.datasetDir,'background.jpg')));
 bggray=bggray(1:trainOpts.spacing:end,1:trainOpts.spacing:end);
 pMapN=pMapN(1:trainOpts.spacing:end,1:trainOpts.spacing:end);
-% pMapN=sqrt(pMapN);
+pMapN=sqrt(pMapN);
 % roi=~treeROI.*roi;
 
 roi=roi(1:trainOpts.spacing:end,1:trainOpts.spacing:end);
