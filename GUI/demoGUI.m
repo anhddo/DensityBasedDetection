@@ -56,7 +56,6 @@ function demo_OpeningFcn(hObject, eventdata, handles, varargin)
 initPath;
 handles.output = hObject;
 dataTag=getChoosedDataset(handles);
-datasetTrain(dataTag);
 opts=GUIinitData(dataTag);
 handles.timer=timer('ExecutionMode','fixedSpacing','Period',0.001,...
     'TimerFcn',{@demoFunc,hObject},'UserData',opts,'Tag','Timer');

@@ -21,7 +21,6 @@ set(obj,'UserData',opts);
         opts.gui.timePerIm=[opts.gui.timePerIm time];
         denEst=opts.gui.denEst;
         denEst=[denEst sum(dispStuff.denIm(:))];
-        cla(axesObj);
         lw=2;
         try plot1=denEst(end-opts.gui.plotEstRange+1:end);catch, plot1=denEst;end;
         plot(axesObj,plot1,'b','LineWidth',lw);
@@ -52,8 +51,12 @@ set(obj,'UserData',opts);
     end
 
     function drawOrinalImg(axesId)
+        axesObj=getAxes(figureObject,axesId);
+        legend(axesObj,'off');
+        xlabel(axesObj,''); ylabel(axesObj,'');
         imshow(img,'Parent',getAxes(figureObject,axesId));
     end
+
     function v=isStepByStep
         handles=guidata(figureObject);
         sbsBtn=findobj(handles.controlPanel,'Tag','stepByStepCb');
@@ -151,8 +154,6 @@ function drawPls(cAxes,img,boxes)
     function draw(cAxes,candidateBox,plsBox)
         [x1,y1]=getCenter(candidateBox);
         [x2,y2]=getCenter(plsBox);
-        % set(axes,'NextPlot','add');
-        cla(cAxes);
         imshow(subIm,'Parent',cAxes);
         rectangle('Position',candidateBox,'EdgeColor','r','Parent',cAxes);
         rectangle('Position',plsBox,'EdgeColor','b','Parent',cAxes);

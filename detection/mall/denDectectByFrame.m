@@ -27,7 +27,6 @@ writeBoundingBoxToFile;
 end
 
 function [boxes,plsDrawingStuff]=denDetect(img,pesClust,opts)
-
 [w,h,range,bPad,padIm]=initParameter(opts.pDetect);
 createHOGImage(opts.pDetect);
 boxes={};

@@ -16,6 +16,7 @@ function opts=init(datasetName,datasetDirName,gtName,gtTestName)
 mainDir=fullfile('.');
 datasetDir=fullfile(mainDir,datasetDirName);
 matDir=fullfile(mainDir,'matfile');
+if ~exist(matDir,'dir');mkdir(matDir);end;
 gtFile=fullfile(datasetDir,gtName);
 gtTestFile=fullfile(matDir,gtTestName);
 pDenPath=fullfile(matDir,sprintf('%spDen.mat',datasetName));
