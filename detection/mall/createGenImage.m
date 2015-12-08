@@ -1,8 +1,8 @@
 function createGenImage(imgFolder,opts)
 % v2struct(pGen);
-load(opts.gtFile);
-ind=newOriData(:,1)>0;
-boxes=newOriData(ind,:);
+groundTruth=opts.gtFile;
+ind=groundTruth(:,1)>0;
+boxes=groundTruth(ind,:);
 boxes=boxes(:,[1 3:6]);
 ind=unique(boxes(:,1));
 n=numel(ind);

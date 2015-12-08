@@ -242,7 +242,7 @@ opts=get(handles.timer,'UserData');
 if strcmp(type,'inc')
     opts.gui.frameId=opts.gui.frameId+opts.gui.framestep;
 elseif strcmp(type,'dec')
-    opts.gui.frameId=opts.gui.frameId-opts.framestep;
+    opts.gui.frameId=opts.gui.frameId-opts.gui.framestep;
 end
 set(handles.timer,'UserData',opts);
 start(handles.timer);

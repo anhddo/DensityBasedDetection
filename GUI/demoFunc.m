@@ -7,7 +7,7 @@ img=getDatasetImg;
 if isStepByStep
     drawOrinalImg(1);
     drawStepOption;
-else
+else 
     drawOrinalImg(2);
     drawEstimationGraph;
     plotTime;
@@ -41,7 +41,6 @@ set(obj,'UserData',opts);
     end
     function drawDetectionBox
         % auto run
-        
         %draw detection box
         imshow(img,'Parent',getAxes(figureObject,3));
         for i=1:size(bbs,1)
@@ -151,14 +150,18 @@ function drawPls(cAxes,img,boxes)
         box(1:2)=box(1:2)-[left top];
     end
 
-    function draw(cAxes,candidateBox,plsBox)
-        [x1,y1]=getCenter(candidateBox);
-        [x2,y2]=getCenter(plsBox);
-        imshow(subIm,'Parent',cAxes);
-        rectangle('Position',candidateBox,'EdgeColor','r','Parent',cAxes);
-        rectangle('Position',plsBox,'EdgeColor','b','Parent',cAxes);
-        hold(cAxes,'on');
-        plot(cAxes,[x1 x2],[y1 y2],'g');
+    function draw(axesObj,candidateBox,plsBox)
+        candidateBox=double(candidateBox);
+        plsBox=double(plsBox);
+        imshow(subIm,'Parent',axesObj);
+        rectangle('Position',candidateBox,'EdgeColor','r','Parent',axesObj);
+        rectangle('Position',plsBox,'EdgeColor','b','Parent',axesObj);
+        hold(axesObj,'on');
+        text(candidateBox(1),candidateBox(2),'Box','Parent',axesObj,'Color','white');
+        text(plsBox(1),plsBox(2),'After applying PLS','Parent',axesObj,'Color','white');
+        %         [x1,y1]=getCenter(candidateBox);
+%         [x2,y2]=getCenter(plsBox);
+%         plot(cAxes,[x1 x2],[y1 y2],'g');
     end
 
     function rescaleCandidateBoxAndPlsBox
@@ -168,7 +171,7 @@ function drawPls(cAxes,img,boxes)
 %%
 candidateBox=boxes.canBox;
 plsBox=boxes.plsBox;
-[subIm,left,top,~,~]=extractAreaContainBothBox(10);
+[subIm,left,top,~,~]=extractAreaContainBothBox(20);
 scale=size(img,1)/size(subIm,1);
 subIm=imResample(subIm,scale);
 candidateBox=shiftBox(candidateBox,left,top);
