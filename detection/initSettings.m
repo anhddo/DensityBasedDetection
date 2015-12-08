@@ -7,8 +7,8 @@ if strcmp(datasetName,'mall')
     opts.svmChoosedImg=chooseImgTrain;
     load(fullfile(opts.datasetDir,'plsPatchTrain.mat'));
     opts.plsChoosedImg=plsPatchTrain;
-elseif strcmp(datasetName,'vivo')
-    opts=init(datasetName,'vivodataset','vivoTrainGt.mat','');
+elseif strcmp(datasetName,'vivo1')
+    opts=init(datasetName,'vivo_dataset1','','');
     opts.scaleRange=1./(1.06.^(0:15));
 end
 end
@@ -18,9 +18,9 @@ datasetDir=fullfile(mainDir,datasetDirName);
 matDir=fullfile(mainDir,'matfile');
 if ~exist(matDir,'dir');mkdir(matDir);end;
 gtFile=fullfile(datasetDirName,gtName);
-if exist(gtFile,'file'),load(gtFile); gtFile=newOriData;end;
+if exist(gtFile,'file')==2,load(gtFile); gtFile=newOriData;end;
 gtTestFile=fullfile(datasetDirName,gtTestName);
-if exist(gtTestFile,'file'),load(gtTestFile); gtTestFile=newOriData;end;
+if exist(gtTestFile,'file')==2,load(gtTestFile); gtTestFile=newOriData;end;
 pDenPath=fullfile(matDir,sprintf('%spDen.mat',datasetName));
 forestPath=fullfile(matDir,sprintf('%sForest.mat',datasetName));
 SvmModelPath=fullfile(matDir,sprintf('%sSVMModel.mat',datasetName));

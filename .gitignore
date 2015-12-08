@@ -11,3 +11,4 @@
 !mall_dataset/plsPatchTrain.mat
 !vivodataset/vivoTrainGt.mat
 !vivodataset/vivoTrainDensityGt.mat
+!vivo_dataset1/vivoTrainDensityGt.mat
