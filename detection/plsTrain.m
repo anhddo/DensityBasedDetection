@@ -1,17 +1,7 @@
 function plsTrain(opts)
 if exist(opts.dtsetOpts.BetaPath,'file'),return;end;
-% if exist(opts.dtsetOpts.BetaPath,'file'),return;end;
-% warning('off');
-% 
-% 
-% reTrainPls=true; reRundetect=true; showBB=false;
-
-% load(fullfile(matDir,'pDen.mat'));p.pDen=pDen;
-% p.pGen=struct('padFullIm',500,'padCrop',48,'H',96,'isFlip',false,...
-%     'imageDir',trainPlsImageDir,'matFile',fullfile(matDir,'groundtruth.mat'));
 trainPlsImageDir=opts.pTrainPls.trainPlsImageDir;
 if ~exist(trainPlsImageDir,'dir')
-%     p.pGen.matfile=fullfile(matDir,'groundtruth.mat');
     opts.pGenPls.imageDir=trainPlsImageDir;
     createGenImage(trainPlsImageDir,opts.pGenPls);
 end
@@ -20,7 +10,6 @@ if ~exist(testPlsImageDir,'dir')
     opts.pGenPls.imageDir=testPlsImageDir;
     createGenImage(testPlsImageDir,opts.pGenPls);
 end
-% choosenPlsTrain=fullfile(dataDir,'choosenPlsTrain');
 choosenPlsTrain=fullfile(opts.dtsetOpts.datasetDir,'plsTrainImage');
 testPlsFiles=bbGt('getFiles',{testPlsImageDir});
 % for i=400:numel(testPlsFiles)

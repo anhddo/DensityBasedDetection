@@ -56,7 +56,6 @@ function demo_OpeningFcn(hObject, eventdata, handles, varargin)
 initPath;
 handles.output = hObject;
 dataTag=getChoosedDataset(handles);
-datasetTrain(dataTag);
 opts=GUIinitData(dataTag);
 handles.timer=timer('ExecutionMode','fixedSpacing','Period',0.001,...
     'TimerFcn',{@demoFunc,hObject},'UserData',opts,'Tag','Timer');
@@ -110,8 +109,8 @@ function figure1_DeleteFcn(hObject, eventdata, handles)
 % hObject    handle to figure1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% stop(handles.timer);
-% delete(handles.timer);
+stop(handles.timer);
+delete(handles.timer);
 
 
 % --- Executes on button press in estbox.
@@ -243,12 +242,17 @@ opts=get(handles.timer,'UserData');
 if strcmp(type,'inc')
     opts.gui.frameId=opts.gui.frameId+opts.gui.framestep;
 elseif strcmp(type,'dec')
-    opts.gui.frameId=opts.gui.frameId-opts.framestep;
+    opts.gui.frameId=opts.gui.frameId-opts.gui.framestep;
 end
 set(handles.timer,'UserData',opts);
 start(handles.timer);
 
 function stepByStepCb_Callback(hObject, eventdata, handles)
+if get(hObject,'Value')
+    handles.grouprbtn.Children=setGroupAttribute(handles.grouprbtn.Children,'Enable','on');
+else
+    handles.grouprbtn.Children=setGroupAttribute(handles.grouprbtn.Children,'Enable','off');
+end
 
 function frameId_Callback(hObject, eventdata, handles)
 data=get(handles.timer,'UserData');

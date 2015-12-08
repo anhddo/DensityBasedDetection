@@ -10,11 +10,7 @@ if exist(thumbfile,'file'), delete(thumbfile);end;
 
 H=128; W=64; cellSize=8; xstep=32;ystep=64;
 % gtFile=fullfile(datasetDir,'vivoTrainGt.mat');
-gtFile=dtsetOpts.gtFile;
 
-
-
-scaleRange=dtsetOpts.scaleRange;
 %pGen: crop pedestrian paramter for hogsvm
 trainPosDir=fullfile(dtsetOpts.datasetDir,'trainPosCrop');
 pGenSVM=struct('padFullIm',500,'padSize',16,'H',96,'isFlip',true,...
@@ -47,7 +43,6 @@ debugOpts=struct('writeBb',true,'dBB',false,'dCenBox',false,...
     'dCenPls',false,'dClust',false,'dDenIm',false,'dDenFilt',false,...
     'colorDen',false);
 pCLustering=struct('bandwidth',3);
-
 opts=struct('datasetName',datasetName,'dtsetOpts',dtsetOpts,'pDen',pDen...
     ,'pGenSVM',pGenSVM,'pGenPls',pGenPls,'pDetect',pDetect,...
     'pTrainPls',pTrainPls,'debugOpts',debugOpts,'pCLustering',pCLustering);

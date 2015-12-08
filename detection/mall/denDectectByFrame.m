@@ -27,19 +27,19 @@ writeBoundingBoxToFile;
 end
 
 function [boxes,plsDrawingStuff]=denDetect(img,pesClust,opts)
-
 [w,h,range,bPad,padIm]=initParameter(opts.pDetect);
 createHOGImage(opts.pDetect);
 boxes={};
-maxDist=0; canBox={};plsBox={};%use for plsDrawingStuff
-
+%use for plsDrawingStuff
 for i=1:numel(opts.pDetect.scaleRange)
+    allDistance=[]; allCanBox=[];allPlsBox=[];
     s=opts.pDetect.scaleRange(i);
     hogIm=hogIms{i};
     boxes1={}; boxes2={};
     pesClust1=pesClust*s;
-    
+
     findPLSDisplacement;
+    matchScale(i)=matchCenterScale;%find best pls box to draw on demoGUI
     removeOoRBoxAndApplyNMS;
     writeCenPlsToFile;
     writeCenBoxToFile
@@ -63,9 +63,39 @@ boxes1=bbNms(boxes1);
 boxes1=bbNms(boxes1,'ovrDnm','min');
 boxes=boxes1(:,1:5);
 
-plsDrawingStuff.canBox=canBox;
-plsDrawingStuff.plsBox=plsBox;
+[~,ind]=min([matchScale.distance]);
+plsDrawingStuff.canBox=matchScale(ind).canBox;
+plsDrawingStuff.plsBox=matchScale(ind).plsBox;
 %%
+    function IfBiggerThanFineThreshold(x,y,cenPes,threshold)
+        W=opts.pDetect.W; H=opts.pDetect.H;
+        if threshold>opts.pDetect.fineThreshold,
+%             boxes1 is plsbox,boxes2 is Candidatebox
+            boxes1{end+1}=[x-W/2+bPad,y-H/2+bPad,W-2*bPad,H-2*bPad,threshold,i];
+            boxes2{end+1}=[cenPes(1)-W/2+bPad,cenPes(2)-H/2+bPad,W-2*bPad,H-2*bPad,threshold,i];
+%             cenCandidate{end+1}=cenPes;
+%             cenPls{end+1}=[x;y];
+            % removeOutOfRangeBox If Distance BiggerThan MaxDistance
+            % use for draw pls box on demoGUI
+            distance=sum(power([cenPes(1)-x cenPes(2)-y],2))/s;
+            allDistance=[allDistance distance];
+            [canBox,plsBox]=rmOoRBox;
+            if ~isempty(canBox)
+                allCanBox=[allCanBox; canBox];
+                allPlsBox=[allPlsBox; plsBox];
+            end
+        end
+    end
+
+    function [canBox,plsBox]=rmOoRBox
+        canBoxTemp=removeOutOfRangeBox(boxes2{end}/s,pad,m1,n1);
+        plsBoxTemp=removeOutOfRangeBox(boxes1{end}/s,pad,m1,n1);
+        canBox=[]; plsBox=[];
+        if ~(isempty(canBoxTemp)||isempty(plsBoxTemp))
+            canBox=canBoxTemp(1:4); plsBox=plsBoxTemp(1:4);
+        end
+    end
+
     function denseSearchForEachBox
         W=opts.pDetect.W; H=opts.pDetect.H;
         for i=1:size(boxes,1)
@@ -82,6 +112,32 @@ plsDrawingStuff.plsBox=plsBox;
                 boxes1{end+1}=[x-W/2+bPad,y-H/2+bPad,W-2*bPad,H-2*bPad,score(k),s];
             end
         end
+    end
+
+    function match=matchCenterScale
+        frameId=opts.gui.frameId;
+        groundtruthTest=opts.dtsetOpts.gtTestFile;
+        idx= groundtruthTest(:,1)==frameId;
+        groundTruthFrame=groundtruthTest(idx,3:6);
+        x=(groundTruthFrame(:,1)+groundTruthFrame(:,3))/2;
+        y=(groundTruthFrame(:,2)+groundTruthFrame(:,4))/2;
+        center=[x';y']';
+        plsCenter=[allPlsBox(:,1)+allPlsBox(:,3)/2 allPlsBox(:,2)+allPlsBox(:,4)/2];
+        dist=pdist2(center,plsCenter);
+        [M,colIdx]=min(dist,[],2);
+        [~,row]=min(M);
+        col=colIdx(row);
+%         a=dist<dist(row,col);
+        match.plsBox=allPlsBox(col,:);
+        match.canBox=allCanBox(col,:);
+        match.distance=dist(row,col);
+%         sum(a(:))
+        
+%         dx=(center(1,1)-plsCenter(1,1));
+%         dy=(center(1,2)-plsCenter(1,2));
+%         a=dx*dx+dy*dy;
+
+        %     distance=center-
     end
 
     function findPLSDisplacement
@@ -158,29 +214,9 @@ plsDrawingStuff.plsBox=plsBox;
 	bPad=16;
     end
 
-    function IfBiggerThanFineThreshold(x,y,cenPes,threshold)
-        W=opts.pDetect.W; H=opts.pDetect.H;
-        if threshold>opts.pDetect.fineThreshold,
-            boxes1{end+1}=[x-W/2+bPad,y-H/2+bPad,W-2*bPad,H-2*bPad,threshold,i];
-            boxes2{end+1}=[cenPes(1)-W/2+bPad,cenPes(2)-H/2+bPad,W-2*bPad,H-2*bPad,threshold,i];
-%             cenCandidate{end+1}=cenPes;
-%             cenPls{end+1}=[x;y];
-            distance=sum(power([cenPes(1)-x cenPes(2)-y],2))/s;
-            % removeOutOfRangeBox If Distance BiggerThan MaxDistance
-            % use for draw pls box on demoGUI
-            rmOoRBox(distance);
-        end
-    end
 
-    function rmOoRBox(distance)
-        if distance>maxDist
-            canBoxTemp=removeOutOfRangeBox(boxes2{end}/s,pad,m1,n1);
-            plsBoxTemp=removeOutOfRangeBox(boxes1{end}/s,pad,m1,n1);
-            if ~(isempty(canBoxTemp)||isempty(plsBoxTemp))
-                canBox=canBoxTemp(1:4); plsBox=plsBoxTemp(1:4);
-            end
-        end
-    end
+
+
 end
 %%
 function [x1,y1]=newPlsPos(hogIm,opts,x,y,w,h,cellSize,threshold)

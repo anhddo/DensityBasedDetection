@@ -16,8 +16,11 @@ function opts=init(datasetName,datasetDirName,gtName,gtTestName)
 mainDir=fullfile('.');
 datasetDir=fullfile(mainDir,datasetDirName);
 matDir=fullfile(mainDir,'matfile');
-gtFile=fullfile(datasetDir,gtName);
-gtTestFile=fullfile(matDir,gtTestName);
+if ~exist(matDir,'dir');mkdir(matDir);end;
+gtFile=fullfile(datasetDirName,gtName);
+if exist(gtFile,'file'),load(gtFile); gtFile=newOriData;end;
+gtTestFile=fullfile(datasetDirName,gtTestName);
+if exist(gtTestFile,'file'),load(gtTestFile); gtTestFile=newOriData;end;
 pDenPath=fullfile(matDir,sprintf('%spDen.mat',datasetName));
 forestPath=fullfile(matDir,sprintf('%sForest.mat',datasetName));
 SvmModelPath=fullfile(matDir,sprintf('%sSVMModel.mat',datasetName));
