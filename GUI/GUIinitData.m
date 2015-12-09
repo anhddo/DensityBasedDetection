@@ -6,13 +6,5 @@ elseif strcmp(datasetName,'vivo')
 end
 gui.timePerIm=[]; gui.denEst=[];
 opts.gui=gui;
-
-load(opts.dtsetOpts.pDenPath);
-load(opts.dtsetOpts.SvmModelPath);
-load(opts.dtsetOpts.BetaPath);
-opts.pDen=pDen;
-opts.model.svm=SVMModel;
-opts.model.BETA=BETA;
-
 end
 

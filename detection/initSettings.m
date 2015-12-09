@@ -2,7 +2,7 @@ function opts=initSettings(datasetName)
 if strcmp(datasetName,'mall')
     opts=init(datasetName,'mall_dataset','groundtruth.mat','gt1801-2000.mat');
     opts.scaleRange='';
-    opts.scaleRange=1.05.^(-5:10);
+    opts.scaleRange=1.05.^(-7:15);
     load(fullfile(opts.datasetDir,'chooseImgTrain.mat'));
     opts.svmChoosedImg=chooseImgTrain;
     load(fullfile(opts.datasetDir,'plsPatchTrain.mat'));

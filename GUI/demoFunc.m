@@ -2,7 +2,7 @@ function demoFunc(obj,evt,figureObject)
 setLayout;
 opts=get(obj,'UserData');
 updateFrameIdOnGUI;
-img=getDatasetImg;
+img=getDatasetImg(opts);
 [time,bbs,dispStuff]=denDectectByFrame(img,opts);
 if isStepByStep
     drawOrinalImg(1);
@@ -36,9 +36,6 @@ set(obj,'UserData',opts);
         opts.gui.denEst=denEst;
     end
 
-    function img=getDatasetImg
-        img=imread(fullfile(opts.dtsetOpts.framesDir,sprintf('seq_%06d.jpg',opts.gui.frameId)));
-    end
     function drawDetectionBox
         % auto run
         %draw detection box

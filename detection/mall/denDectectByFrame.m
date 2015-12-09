@@ -37,9 +37,11 @@ for i=1:numel(opts.pDetect.scaleRange)
     hogIm=hogIms{i};
     boxes1={}; boxes2={};
     pesClust1=pesClust*s;
-
+    
     findPLSDisplacement;
-    matchScale(i)=matchCenterScale;%find best pls box to draw on demoGUI
+    if isfield(opts,'gui')
+        matchScale(i)=matchCenterScale;%find best pls box to draw on demoGUI
+    end
     removeOoRBoxAndApplyNMS;
     writeCenPlsToFile;
     writeCenBoxToFile
@@ -63,18 +65,22 @@ boxes1=bbNms(boxes1);
 boxes1=bbNms(boxes1,'ovrDnm','min');
 boxes=boxes1(:,1:5);
 
-[~,ind]=min([matchScale.distance]);
-plsDrawingStuff.canBox=matchScale(ind).canBox;
-plsDrawingStuff.plsBox=matchScale(ind).plsBox;
+if isfield(opts,'gui')
+    [~,ind]=min([matchScale.distance]);
+    plsDrawingStuff.canBox=matchScale(ind).canBox;
+    plsDrawingStuff.plsBox=matchScale(ind).plsBox;
+else
+    plsDrawingStuff=[];
+end
 %%
     function IfBiggerThanFineThreshold(x,y,cenPes,threshold)
         W=opts.pDetect.W; H=opts.pDetect.H;
         if threshold>opts.pDetect.fineThreshold,
-%             boxes1 is plsbox,boxes2 is Candidatebox
+            %             boxes1 is plsbox,boxes2 is Candidatebox
             boxes1{end+1}=[x-W/2+bPad,y-H/2+bPad,W-2*bPad,H-2*bPad,threshold,i];
             boxes2{end+1}=[cenPes(1)-W/2+bPad,cenPes(2)-H/2+bPad,W-2*bPad,H-2*bPad,threshold,i];
-%             cenCandidate{end+1}=cenPes;
-%             cenPls{end+1}=[x;y];
+            %             cenCandidate{end+1}=cenPes;
+            %             cenPls{end+1}=[x;y];
             % removeOutOfRangeBox If Distance BiggerThan MaxDistance
             % use for draw pls box on demoGUI
             distance=sum(power([cenPes(1)-x cenPes(2)-y],2))/s;
@@ -127,16 +133,16 @@ plsDrawingStuff.plsBox=matchScale(ind).plsBox;
         [M,colIdx]=min(dist,[],2);
         [~,row]=min(M);
         col=colIdx(row);
-%         a=dist<dist(row,col);
+        %         a=dist<dist(row,col);
         match.plsBox=allPlsBox(col,:);
         match.canBox=allCanBox(col,:);
         match.distance=dist(row,col);
-%         sum(a(:))
+        %         sum(a(:))
         
-%         dx=(center(1,1)-plsCenter(1,1));
-%         dy=(center(1,2)-plsCenter(1,2));
-%         a=dx*dx+dy*dy;
-
+        %         dx=(center(1,1)-plsCenter(1,1));
+        %         dy=(center(1,2)-plsCenter(1,2));
+        %         a=dx*dx+dy*dy;
+        
         %     distance=center-
     end
 
@@ -195,23 +201,23 @@ plsDrawingStuff.plsBox=matchScale(ind).plsBox;
         end
     end
 
-	function createHOGImage(opts)
+    function createHOGImage(opts)
         nScale=numel(opts.scaleRange);
-	hogIms=cell(1,nScale);
-	for i=1:nScale
-		s=opts.scaleRange(i);
-		imS=imResample(padIm,s);
-		hogIms{i}=computeHog(imS,opts.hogType);
-	end
-	end
+        hogIms=cell(1,nScale);
+        for i=1:nScale
+            s=opts.scaleRange(i);
+            imS=imResample(padIm,s);
+            hogIms{i}=computeHog(imS,opts.hogType);
+        end
+    end
 
-	function [w,h,range,bPad,padImg]=initParameter(opts)
-	w=opts.W/opts.cellSize;h=opts.H/opts.cellSize;
-	[m1,n1,~]=size(img);
-	pad=floor(m1/16);padImg=imPad(img,pad,'replicate');
-	pesClust=pesClust+pad;
-	range=-1:1;
-	bPad=16;
+    function [w,h,range,bPad,padImg]=initParameter(opts)
+        w=opts.W/opts.cellSize;h=opts.H/opts.cellSize;
+        [m1,n1,~]=size(img);
+        pad=floor(m1/16);padImg=imPad(img,pad,'replicate');
+        pesClust=pesClust+pad;
+        range=-1:1;
+        bPad=16;
     end
 
 

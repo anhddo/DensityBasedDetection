@@ -1,22 +1,10 @@
-function [resultPath,timeResultPath]=mallPlsDetection(method)
-p=mallDetectionParameter;
-v2struct(p);
-resultPath=fullfile('result',[method '.txt']);
-timeResultPath=fullfile(matDir,[method 'time.mat']);
-if exist(resultPath,'file'),return;end;
-
-mallPlsTrain;
-load(fullfile(matDir,'BETA.mat'));
-
+function mallPlsDetection(opts)
+if exist(opts.resultOpts.resultFile,'file'),return;end;
 showBB=false;
-
-modelName='mallSVMModel';
-modelPath=fullfile(matDir,[modelName '.mat']);
-try load(modelPath) ;catch, trainSVMModel(p); end;
-scaleRange=1./(1.04.^(-15:10));
-pPls=struct('cellSize',cellSize,'hogType',hogType,'threshold',-2,...
-    'fineThreshold',0,'H',H,'W',W,'xstep',xstep,'ystep',ystep,'pad',padSize,...
-    'scaleRange',scaleRange);
+% scaleRange=1./(1.04.^(-15:10));
+% pPls=struct('cellSize',cellSize,'hogType',hogType,'threshold',-2,...
+%     'fineThreshold',0,'H',H,'W',W,'xstep',xstep,'ystep',ystep,'pad',padSize,...
+%     'scaleRange',scaleRange);
 n=numel(testFiles);
 bbs=cell(1,n);
 totalTime=0;
