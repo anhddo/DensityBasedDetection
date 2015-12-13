@@ -54,18 +54,3 @@ for i=1:opts.pDen.nTrnIm
     trainWeights{i}=repmat(opts.pDen.roi,1,1,opts.pDen.nTrees);
 end
 end
-
-function findMinLeaf(X,Y)
-rng('default')
-leafs=100:50:1000;
-N = numel(leafs);
-err = zeros(N,1);
-for n=1:N
-    t = fitrtree(X,Y,'CrossVal','On',...
-        'MinLeaf',leafs(n));
-    err(n) = kfoldLoss(t);
-end
-plot(leafs,err);
-xlabel('Min Leaf Size');
-ylabel('cross-validated error');
-end

@@ -2,6 +2,7 @@ function createPadImage(trainposDir,boxes, imPath,opts)
 %% create train pos
 SH=opts.H+2*opts.padSize;SW=SH/2;
 % load(fullfile(matDir,'chooseImgTrain.mat'));
+nWritedImg=0;
 for i=1:numel(imPath)
     im=im2single(imread(imPath{i}));
     im=imPad(im,opts.padFullIm,'replicate');
@@ -30,9 +31,14 @@ for i=1:numel(imPath)
         end;
         if sum(match)
             imwrite(subim,fullfile(trainposDir,imgName));
+            nWritedImg=nWritedImg+1;
             if opts.isFlip,
                 imwrite(fliplr(subim),fullfile(trainposDir,sprintf('%d_%d_flip.jpg',i,j)));
+                nWritedImg=nWritedImg+1;
             end;
+            if isfield(opts,'maxWritedFile')&&nWritedImg>opts.maxWritedFile
+                return;
+            end
         end
     end
 end

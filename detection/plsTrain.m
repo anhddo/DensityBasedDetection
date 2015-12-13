@@ -2,13 +2,11 @@ function plsTrain(opts)
 if exist(opts.dtsetOpts.BetaPath,'file'),return;end;
 trainPlsImageDir=opts.pTrainPls.trainPlsImageDir;
 if ~exist(trainPlsImageDir,'dir')
-    opts.pGenPls.imageDir=trainPlsImageDir;
-    createGenImage(trainPlsImageDir,opts.pGenPls);
+    createGenImage(trainPlsImageDir,opts.pGenPlsTrain);
 end
 testPlsImageDir=opts.pTrainPls.testPlsImageDir;
 if ~exist(testPlsImageDir,'dir')
-    opts.pGenPls.imageDir=testPlsImageDir;
-    createGenImage(testPlsImageDir,opts.pGenPls);
+    createGenImage(testPlsImageDir,opts.pGenPlsTest);
 end
 choosenPlsTrain=fullfile(opts.dtsetOpts.datasetDir,'plsTrainImage');
 testPlsFiles=bbGt('getFiles',{testPlsImageDir});

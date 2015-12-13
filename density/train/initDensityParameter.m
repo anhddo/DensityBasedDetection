@@ -1,16 +1,12 @@
 function opts=initDensityParameter(varargin)
 %init default parameter
-datasetName=varargin{1};
+opts=varargin{1};
+datasetName=opts.datasetName;
 dtsetOpts=initSettings(datasetName);
 if nargin>1,trainOpts=varargin{2};
 else trainOpts=struct('spacing',4,'nTrees',5,'minLeaf',1000,'method',0);
 end
-if strcmp(dataset,'vivo')
-    load(fullfile(datasetDir,'vivoTrainDensityGt.mat'));
-    bggray=rgb2gray(imread(fullfile(datasetDir,'background.jpg')));
-    pMapN=ones(size(bggray));
-    roi=pMapN;
-end
+bggray=rgb2gray(imread(fullfile(dtsetOpts.datasetDir,'background.jpg')));
 if strcmp(datasetName,'mall')
     load(fullfile(dtsetOpts.datasetDir,'mall_gt.mat'));
     load(fullfile(dtsetOpts.datasetDir,'perspective_roi.mat'));
@@ -18,13 +14,23 @@ if strcmp(datasetName,'mall')
     % load(fullfile(matDir,'treeROI.mat'));
     % load(fullfile(matDir,'groundtruth.mat'));
     load(fullfile(dtsetOpts.datasetDir,'denTrainGT.mat'));
+    count=count(opts.dtsetOpts.indexTestFile);
     roi=roi.mask;
-elseif strcmp(datasetName,'vivo')
-    load(fullfile(dtsetOpts.datasetDir,'vivoTrainDensityGt.mat'));
-    pMapN=ones(size(bggray));
-    roi=pMapN;
+elseif strcmp(datasetName,'vivo1')
+    load(fullfile(dtsetOpts.datasetDir,'vivoTest_MAH00183.mat'));
+    range=unique(newOriData(newOriData(:,1)>0));
+    count=zeros(1,numel(range));
+    for i=1:numel(range)
+        idx=newOriData(:,1)==range(i);
+        count(i)=sum(idx);
+    end
+    
+    load(fullfile(dtsetOpts.datasetDir,'vivoTrainDensityGt10.mat'));
+%     ind=unique(newOriData(newOriData(:,1)>0));
+    
+	load(fullfile(dtsetOpts.datasetDir,'perspective.mat'));
+    roi=ones(size(bggray));
 end
-bggray=rgb2gray(imread(fullfile(dtsetOpts.datasetDir,'background.jpg')));
 bggray=bggray(1:trainOpts.spacing:end,1:trainOpts.spacing:end);
 pMapN=pMapN(1:trainOpts.spacing:end,1:trainOpts.spacing:end);
 pMapN=sqrt(pMapN);
@@ -32,17 +38,13 @@ pMapN=sqrt(pMapN);
 
 roi=roi(1:trainOpts.spacing:end,1:trainOpts.spacing:end);
 
-% imIdx=1:5:51;
-% imIdx=[46 51 76 86 111 121 126 146 271 301 459 488];
-% imIdx=[1 6 86 101 111 121 126 131 151 156 161 176 186];
-
 imIdx=unique(newOriData(:,1));
 imIdx=imIdx(imIdx>0);
 loc=cell(1,numel(imIdx));
 for i=1:numel(imIdx)
     id=imIdx(i);
     bb=newOriData(newOriData(:,1)==id,:);
-    bb=round(bb(:,3:6)/trainOpts.spacing);
+    bb=floor(bb(:,3:6)/trainOpts.spacing);
     bb(bb==0)=bb(bb==0)+1;
     loc{i}=bb;
 end

@@ -1,24 +1,55 @@
 function demoFunc(obj,evt,figureObject)
-setLayout;
+% setLayout;
 opts=get(obj,'UserData');
-updateFrameIdOnGUI;
-img=getDatasetImg(opts);
-[time,bbs,dispStuff]=denDectectByFrame(img,opts);
-if isStepByStep
-    drawOrinalImg(1);
-    drawStepOption;
-else 
-    drawOrinalImg(2);
-    drawEstimationGraph;
-    plotTime;
-    drawDetectionBox;
-    increaseFrameId;
+img=getDatasetImg(opts,getFrameId(opts));
+isDenBased=strcmp(getMethod,'denBased');
+isPLS=strcmp(getMethod,'pls');
+if isDenBased
+    [time,bbs,dispStuff]=denDectectByFrame(img,opts);
+elseif isPLS
+    [time,bbs]=plsDetect(img,opts);
 end
+opts.gui.timePerIm=[opts.gui.timePerIm time];
+denBasedDraw;
+plsDraw;
+updateFrameIdOnGUI;
 set(obj,'UserData',opts);
 %% nested function
+    function plsDraw
+        if isPLS
+            setAxesPos('2x1',figureObject);
+            plotTime(2);
+            drawDetectionBox;
+            increaseFrameId;
+        end
+    end
+    function denBasedDraw
+        if isDenBased
+            if isStepByStep
+                setAxesPos('2x1',figureObject);
+                enableGroupRbtnAndStopTimer
+                drawOrinalImg(1);
+                drawStepOption;
+            else
+                setAxesPos('2x2',figureObject);
+                drawOrinalImg(2);
+                drawEstimationGraph;
+                plotTime(4);
+                drawDetectionBox;
+                increaseFrameId;
+            end
+        end
+    end
+    function method=getMethod
+        handles=guidata(figureObject);
+        if get(handles.densityBasedrbtn,'Value')
+            method='denBased';
+        else
+            method='pls';
+        end
+    end
     function drawEstimationGraph
         axesObj=getAxes(figureObject,1);
-        opts.gui.timePerIm=[opts.gui.timePerIm time];
         denEst=opts.gui.denEst;
         denEst=[denEst sum(dispStuff.denIm(:))];
         lw=2;
@@ -27,7 +58,7 @@ set(obj,'UserData',opts);
         hold(axesObj,'on');
         if isfield(opts.pDen,'count')
             count=opts.pDen.count;
-            plot2=count(opts.gui.frameId-numel(plot1)+1:opts.gui.frameId)';
+            plot2=count(opts.gui.iFrame-numel(plot1)+1:opts.gui.iFrame);
             plot(axesObj,plot2,'r','LineWidth',lw);
             xlabel(axesObj,'frames');
             ylabel(axesObj,'count');
@@ -60,11 +91,12 @@ set(obj,'UserData',opts);
     end
 
     function increaseFrameId
-        opts.gui.frameId=opts.gui.frameId+opts.gui.framestep;
+        opts.gui.iFrame=opts.gui.iFrame+1;
     end
 
     function updateFrameIdOnGUI
-        setFigureHandle('attribute',figureObject,'frameId','String',opts.gui.frameId);
+        frameNumber=opts.dtsetOpts.indexTestFile(opts.gui.iFrame);
+        setFigureHandle('attribute',figureObject,'frameId','String',frameNumber);
     end
     function setLayout
         if isStepByStep
@@ -82,7 +114,7 @@ set(obj,'UserData',opts);
         guidata(figureObject,handles);
     end
 
-    function plotTime
+    function plotTime(axesIdx)
         timePerIm=opts.gui.timePerIm;
         avgTime=mean(timePerIm);
         if numel(timePerIm)>5
@@ -90,10 +122,10 @@ set(obj,'UserData',opts);
         else
             timePerIm=padarray(timePerIm,[0 5-numel(timePerIm)],0,'post');
         end
-        bar(getAxes(figureObject,4),1:5,timePerIm,0.8,'FaceColor','b');
-        ylabel(getAxes(figureObject,4),'Time(s)');
+        bar(getAxes(figureObject,axesIdx),1:5,timePerIm,0.8,'FaceColor','b');
+        ylabel(getAxes(figureObject,axesIdx),'Time(s)');
         text(0.25,0.25,sprintf('Average Time: %f (s)',avgTime),'Margin',3,...
-            'BackgroundColor','w','Color','k','Parent',getAxes(figureObject,4));
+            'BackgroundColor','w','Color','k','Parent',getAxes(figureObject,axesIdx));
     end
 
     function drawStepOption
@@ -111,7 +143,7 @@ set(obj,'UserData',opts);
             plot(centers(1,:),centers(2,:),'*','Parent',getAxes(figureObject,2));
         elseif dispPls
             try
-                drawPls(getAxes(figureObject,2),img,dispStuff.plsDrawingStuff);
+                drawPls(figureObject,img,dispStuff.plsDrawingStuff);
             catch
             end
         end
@@ -128,7 +160,7 @@ end
 
 
 
-function drawPls(cAxes,img,boxes)
+function drawPls(figureObject,img,boxes)
 %%
     function [x,y]=getCenter(box)
         x=box(1)+box(3)/2;
@@ -141,13 +173,17 @@ function drawPls(cAxes,img,boxes)
         bot=max(candidateBox(2)+candidateBox(4), plsBox(2)+plsBox(4))+pad;
         top=round(top);bot=round(bot);left=round(left);right=round(right);
         subIm=img(top:bot,left:right,:);
+        subRect=[left top, right-left,bot-top];
+        rectangle('Position',subRect,'EdgeColor','g','Parent',getAxes(figureObject,1));
+        %         rectangle('Position',plsBox,'EdgeColor','g','Parent',getAxes(figureObject,1));
     end
 
     function box=shiftBox(box,left,top)
         box(1:2)=box(1:2)-[left top];
     end
 
-    function draw(axesObj,candidateBox,plsBox)
+    function draw(candidateBox,plsBox)
+        axesObj=getAxes(figureObject,2);
         candidateBox=double(candidateBox);
         plsBox=double(plsBox);
         imshow(subIm,'Parent',axesObj);
@@ -155,10 +191,10 @@ function drawPls(cAxes,img,boxes)
         rectangle('Position',plsBox,'EdgeColor','b','Parent',axesObj);
         hold(axesObj,'on');
         text(candidateBox(1),candidateBox(2),'Box','Parent',axesObj,'Color','white');
-        text(plsBox(1),plsBox(2),'After applying PLS','Parent',axesObj,'Color','white');
+        text(plsBox(1),plsBox(2),'PLS Box','Parent',axesObj,'Color','white');
         %         [x1,y1]=getCenter(candidateBox);
-%         [x2,y2]=getCenter(plsBox);
-%         plot(cAxes,[x1 x2],[y1 y2],'g');
+        %         [x2,y2]=getCenter(plsBox);
+        %         plot(cAxes,[x1 x2],[y1 y2],'g');
     end
 
     function rescaleCandidateBoxAndPlsBox
@@ -174,7 +210,7 @@ subIm=imResample(subIm,scale);
 candidateBox=shiftBox(candidateBox,left,top);
 plsBox=shiftBox(plsBox,left,top);
 rescaleCandidateBoxAndPlsBox;
-draw(cAxes,candidateBox,plsBox);
+draw(candidateBox,plsBox);
 
 end
 function [dispDen,dispNoiseReduce,dispClust,dispPls]=getOptionValue(figureObject)

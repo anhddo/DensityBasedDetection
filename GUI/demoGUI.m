@@ -22,7 +22,7 @@ function varargout = demoGUI(varargin)
 
 % Edit the above text to modify the response to help demo
 
-% Last Modified by GUIDE v2.5 02-Dec-2015 09:15:57
+% Last Modified by GUIDE v2.5 09-Dec-2015 21:20:18
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -65,18 +65,14 @@ guidata(hObject, handles);
 % UIWAIT makes demo wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 function tag=getChoosedDataset(handles)
-datasets=handles.dataset.Children;
-for i=1:numel(datasets)
-    if get(datasets(i),'Value')
-        str=get(datasets(i),'Tag');
-        if strcmp(str,'isMall'),tag='mall';
-        elseif strcmp(str,'isVivo'),tag='vivo';
-        elseif strcmp(str,'isCrescent'),tag='crescent';
-        end
-        return;
-    end
+popup=handles.datasetPopup;
+v=get(popup,'Value');
+switch v
+    case 1
+        tag='mall';
+    case 2
+        tag='vivo1';
 end
-
 % --- Outputs from this function are returned to the command line.
 function varargout = demo_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
@@ -240,9 +236,9 @@ ajustFrameNumber(handles,'inc');
 function ajustFrameNumber(handles,type)
 opts=get(handles.timer,'UserData');
 if strcmp(type,'inc')
-    opts.gui.frameId=opts.gui.frameId+opts.gui.framestep;
+    opts.gui.iFrame=opts.gui.iFrame+opts.gui.framestep;
 elseif strcmp(type,'dec')
-    opts.gui.frameId=opts.gui.frameId-opts.gui.framestep;
+    opts.gui.iFrame=opts.gui.iFrame-opts.gui.framestep;
 end
 set(handles.timer,'UserData',opts);
 start(handles.timer);
@@ -255,9 +251,9 @@ else
 end
 
 function frameId_Callback(hObject, eventdata, handles)
-data=get(handles.timer,'UserData');
+opts=get(handles.timer,'UserData');
 opts.gui.frameId=str2num(get(hObject,'String'));
-set(handles.timer,'UserData',data);
+set(handles.timer,'UserData',opts);
 % set(handles.timer,'TimerFcn',{@demoFunc,handles});
 start(handles.timer);
 
@@ -288,3 +284,50 @@ function dataset_SelectionChangedFcn(hObject, eventdata, handles)
 % hObject    handle to the selected object in dataset 
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on selection change in datasetPopup.
+function datasetPopup_Callback(hObject, eventdata, handles)
+% hObject    handle to datasetPopup (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns datasetPopup contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from datasetPopup
+stop(handles.timer);
+delete(handles.timer);
+dataTag=getChoosedDataset(handles);
+opts=GUIinitData(dataTag);
+handles.timer=timer('ExecutionMode','fixedSpacing','Period',0.001,...
+    'TimerFcn',{@demoFunc,hObject},'UserData',opts,'Tag','Timer');
+% Update handles structure
+guidata(hObject, handles);
+% --- Executes during object creation, after setting all properties.
+function datasetPopup_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to datasetPopup (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in densityBasedrbtn.
+function densityBasedrbtn_Callback(hObject, eventdata, handles)
+% hObject    handle to densityBasedrbtn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of densityBasedrbtn
+
+
+% --- Executes on button press in isPLSBased.
+function isPLSBased_Callback(hObject, eventdata, handles)
+% hObject    handle to isPLSBased (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of isPLSBased

@@ -5,7 +5,7 @@ if ~exist(opts.resultOpts.gtTextFolder,'dir')
     ind=groundTruth(:,1)>=0;
     boxes=groundTruth(ind,[1 3:6]);
     boxes(:,2:5)=convertBB(boxes(:,2:5)','xywh',[]);
-    for i=1801:2000
+    for i=opts.dtsetOpts.indexTestFile
         ind=boxes(:,1)==i;
         box1=boxes(ind,:);
         box1(:,2:5)=bbApply('resize',box1(:,2:5),1,0,0.5);

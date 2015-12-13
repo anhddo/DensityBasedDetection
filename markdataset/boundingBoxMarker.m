@@ -62,7 +62,7 @@ handles.saveReminderCounter = 0;
 handles.name_append='';
 handles.path2Folder=get(handles.folderPath,'String');
 % handles.matfile=fullfile('..','matfile','groundtruth.mat');
-handles.matfile=fullfile('..','vivo_dataset1','vivoTrainDensityGt.mat');
+handles.matfile=fullfile('..','vivo_dataset1','vivoTrain_MAH00183.mat');
 % handles.matfile=fullfile('..','matfile','newOriData_anh.mat');
 if (exist(handles.matfile,'file'))
     load(handles.matfile);

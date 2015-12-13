@@ -39,7 +39,7 @@ for i=1:numel(opts.pDetect.scaleRange)
     pesClust1=pesClust*s;
     
     findPLSDisplacement;
-    if isfield(opts,'gui')
+    if isfield(opts,'gui') && ~isempty(allPlsBox)
         matchScale(i)=matchCenterScale;%find best pls box to draw on demoGUI
     end
     removeOoRBoxAndApplyNMS;
@@ -65,7 +65,7 @@ boxes1=bbNms(boxes1);
 boxes1=bbNms(boxes1,'ovrDnm','min');
 boxes=boxes1(:,1:5);
 
-if isfield(opts,'gui')
+if isfield(opts,'gui')&& ~isempty(matchScale)
     [~,ind]=min([matchScale.distance]);
     plsDrawingStuff.canBox=matchScale(ind).canBox;
     plsDrawingStuff.plsBox=matchScale(ind).plsBox;
@@ -121,7 +121,7 @@ end
     end
 
     function match=matchCenterScale
-        frameId=opts.gui.frameId;
+        frameId=opts.dtsetOpts.indexTestFile(opts.gui.iFrame);
         groundtruthTest=opts.dtsetOpts.gtTestFile;
         idx= groundtruthTest(:,1)==frameId;
         groundTruthFrame=groundtruthTest(idx,3:6);

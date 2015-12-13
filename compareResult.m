@@ -1,7 +1,10 @@
 function compareResult
+datasetName='vivo1';
 initPath;
-opts1=createParameter('mall','DenBased');
-opts2=createParameter('mall','PLS');
+datasetTrain(datasetName)
+opts1=createParameter(datasetName,'DenBased');
+opts1.pDetect.fineThreshold=-0.5;
+opts2=createParameter(datasetName,'PLS');
 
 applyDetect(opts1);
 applyDetect(opts2);
@@ -30,7 +33,7 @@ xlabel('precision'); ylabel('recall');
 legend('Proposed method','PLS');
 end
 function opts=createParameter(datasetName,methodName)
-opts=allParameter(datasetName);
+opts=loadTrainModel(datasetName);
 resultPath=fullfile(opts.dtsetOpts.datasetDir,'result');
 if ~exist(resultPath,'dir'),mkdir(resultPath);end;
 resultFile=fullfile(resultPath,strcat(datasetName,methodName,'.txt'));

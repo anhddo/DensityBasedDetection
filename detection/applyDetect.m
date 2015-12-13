@@ -2,7 +2,7 @@ function applyDetect(opts)
 createTxtGt(opts);
 if ~exist(opts.resultOpts.resultFile,'file')
     gtTestFile=opts.dtsetOpts.gtTestFile;
-    imgRange=unique(gtTestFile(:,1));
+    imgRange=unique(gtTestFile(gtTestFile(:,1)>0));
     totalImg=numel(imgRange);
     bbs=cell(1,totalImg);
     timeFrame=zeros(1,totalImg);
@@ -11,7 +11,7 @@ if ~exist(opts.resultOpts.resultFile,'file')
         if strcmp(opts.resultOpts.methodName,'DenBased')
             [time,boxes,~]=denDectectByFrame(img,opts);
         elseif strcmp(opts.resultOpts.methodName,'PLS')
-            [time,boxes]=plsSL(img,opts);
+            [time,boxes]=plsDetect(img,opts);
         end
         fprintf('image %d, time:%f\n',imgRange(imgIdx),time);
         timeFrame(imgIdx)=time;

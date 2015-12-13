@@ -18,7 +18,7 @@ if ~exist(trainNegName,'file'),
 else
     load(trainNegName);
 end;
-stage0Path=fullfile(opts.dtsetOpts.matDir,'svmstage0.mat');
+stage0Path=fullfile(opts.dtsetOpts.matDir,sprintf('%ssvmstage0.mat',opts.datasetName));
 if ~exist(stage0Path,'file')
     SVMModel=trainSVMModel0(trainPos,trainNeg,opts);
     save(stage0Path,'SVMModel');
@@ -34,7 +34,8 @@ for i=1:nRetrain
     if size(hardNeg,2)>0
         neg=[neg hardNeg];
         SVMModel=trainSVMModel0(trainPos,neg,opts);
-        save(fullfile(opts.dtsetOpts.matDir,sprintf('svmstage%d',i)),'SVMModel');
+%         stage0Path=fullfile(opts.dtsetOpts.matDir,sprintf('%ssvmstage0.mat',opts.datasetName));
+%         save(fullfile(opts.dtsetOpts.matDir,sprintf('svmstage%d',i)),'SVMModel');
     end
 end
 save(opts.dtsetOpts.SvmModelPath,'SVMModel');
@@ -58,7 +59,7 @@ nNeg=nPos*5;
 
 fprintf('Gathering negative subwindows:\n');
 im=loadImage(fullfile(opts.dtsetOpts.datasetDir,'background.jpg'),opts.pDetect.imageType);
-scale=1.05.^(-5:10);
+scale=opts.pDetect.scaleRange;
 trainNeg={};
 H=opts.pDetect.H;
 W=opts.pDetect.W;
@@ -80,8 +81,6 @@ end
 
 function SVMModel=trainSVMModel0(trainPos,trainNeg,opts)
 disp('Training stage SVM');
-if ~exist('trainPos','var'),load('trainPos'); end;
-if ~exist('trainNeg','var'),load('trainNeg'); end;
 nPos=size(trainPos,2);nNeg=size(trainNeg,2);
 X=[trainPos trainNeg];  Y=[ones(1,nPos) -ones(1,nNeg)];
 clear trainNeg trainPos;
