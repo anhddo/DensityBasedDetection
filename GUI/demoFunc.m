@@ -1,11 +1,11 @@
 function demoFunc(obj,evt,figureObject)
 % setLayout;
 opts=get(obj,'UserData');
-img=getDatasetImg(opts,getFrameId(opts));
 isDenBased=strcmp(getMethod,'denBased');
 isPLS=strcmp(getMethod,'pls');
+img=getDatasetImg(opts,getFrameId(opts));
 if isDenBased
-    [time,bbs,dispStuff]=denDectectByFrame(img,opts);
+    [time,bbs,dispStuff]=denDectectByFrame(getFrameId(opts),opts);
 elseif isPLS
     [time,bbs]=plsDetect(img,opts);
 end

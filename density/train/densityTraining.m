@@ -1,7 +1,7 @@
 function densityTraining(opts)
 if ~exist(opts.dtsetOpts.pDenPath,'file')
     %generate feature channels and density images
-    [opts.pDen.ftrs,opts.pDen.denGts,opts.pDen.ims]=genFtrAndDen(opts);
+    [opts.pDen.ftrs,opts.pDen.denGts]=genFtrAndDen(opts);
     if(exist(opts.dtsetOpts.forestPath,'file'))
         loadFile=load(opts.dtsetOpts.forestPath);Forest=loadFile.Forest;
     else
@@ -12,7 +12,7 @@ if ~exist(opts.dtsetOpts.pDenPath,'file')
         Forest=TreeBagger(opts.pDen.nTrees,X,Y,'method','regression','NVarToSample','all','minLeaf',opts.pDen.minLeaf);
         Forest=Forest.compact();
         Forest=Forest.Trees;
-        save(opts.dtsetOpts.forestPath,'Forest');
+%         save(opts.dtsetOpts.forestPath,'Forest');
     end
     
     opts.pDen.Forest=Forest; clear Forest;

@@ -1,11 +1,11 @@
-function denGts=createDenseTrainImages(p,ims)
-denGts=cell(1,p.pDen.nTrnIm);
-for i=1:p.pDen.nTrnIm
-    
-    [m,n,~]=size(ims{i});
+function denGts=createDenseTrainImages(opts)
+denGts=cell(1,opts.pDen.nTrnIm);
+for i=1:opts.pDen.nTrnIm
+    idx=opts.pDen.imIdx(i);
+    [m,n,~]=size(getImForDensityPhase(idx,opts));
     
     denGt=zeros(m,n);
-    bbs=p.pDen.loc{i};
+    bbs=opts.pDen.loc{i};
     for j=1:size(bbs,1)
         bb=bbs(j,:);
         gauss=createGauss(bb(4)-bb(2)+1, bb(3)-bb(1)+1,1000, 1000, 100);

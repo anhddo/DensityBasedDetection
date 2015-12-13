@@ -14,7 +14,7 @@ if strcmp(datasetName,'mall')
     % load(fullfile(matDir,'treeROI.mat'));
     % load(fullfile(matDir,'groundtruth.mat'));
     load(fullfile(dtsetOpts.datasetDir,'denTrainGT.mat'));
-    count=count(opts.dtsetOpts.indexTestFile);
+    count=count(opts.dtsetOpts.indexTestFile)';
     roi=roi.mask;
 elseif strcmp(datasetName,'vivo1')
     load(fullfile(dtsetOpts.datasetDir,'vivoTest_MAH00183.mat'));
@@ -25,7 +25,7 @@ elseif strcmp(datasetName,'vivo1')
         count(i)=sum(idx);
     end
     
-    load(fullfile(dtsetOpts.datasetDir,'vivoTrainDensityGt10.mat'));
+    load(fullfile(dtsetOpts.datasetDir,'vivoTrainDensityGt8.mat'));
 %     ind=unique(newOriData(newOriData(:,1)>0));
     
 	load(fullfile(dtsetOpts.datasetDir,'perspective.mat'));

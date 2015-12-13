@@ -1,6 +1,7 @@
-function [time,boxes,dispStuff]=denDectectByFrame(img,opts)
+function [time,boxes,dispStuff]=denDectectByFrame(idx,opts)
 time=tic;
-[pesClust,denIm,noiseReduce]=pedestrianCluster(img,opts);
+img=getDatasetImg(opts,idx);
+[pesClust,denIm,noiseReduce]=pedestrianCluster(idx,opts);
 writeClustImageToFile;
 [boxes,plsDrawingStuff]=denDetect(img,pesClust,opts);
 dispStuff=v2struct(denIm,noiseReduce,pesClust,plsDrawingStuff);
@@ -235,9 +236,8 @@ offset=[1 ftr(:)']*opts.model.BETA;
 x1=x+offset(1);y1=y+offset(2);
 end
 %%
-function [centers,denIm0,noiseReduce]=pedestrianCluster(img0,opts)
-img=img0(1:opts.pDen.spacing:end,1:opts.pDen.spacing:end,:);
-denIm=mallden(img,opts);
+function [centers,denIm0,noiseReduce]=pedestrianCluster(idx,opts)
+denIm=mallden(idx,opts);
 denIm0=denIm;
 t=max(denIm(:))*0.0001;
 denIm(denIm<t)=0;
@@ -245,7 +245,7 @@ denIm(denIm>=t)=1;
 
 noiseReduce=medfilt2(denIm,[3 3]);
 [r,c]=find(noiseReduce);
-scale=size(img0,1)/size(noiseReduce,1);
+scale=size(getDatasetImg(opts,idx),1)/size(noiseReduce,1);
 noiseReduce=imResample(noiseReduce,scale,'nearest');
 x=[c r]';
 [centers,~,~] = MeanShiftCluster(x,opts.pCLustering.bandwidth);

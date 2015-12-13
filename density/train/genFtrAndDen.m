@@ -1,9 +1,9 @@
-function [ftrs,denGts,ims]=genFtrAndDen(opts)
-ims=createAllImForDenseTraining(opts);
+function [ftrs,denGts]=genFtrAndDen(opts)
+% ims=createAllImForDenseTraining(opts);
     function ftrs=extractFeatureForTrainImg
         ftrs=cell(1,opts.pDen.nTrnIm);
         for i=1:opts.pDen.nTrnIm
-            ftrs{i}=extractFeature(ims{i},opts);
+            ftrs{i}=extractFeature(opts.pDen.imIdx(i),opts);
         end
     end
 
@@ -15,7 +15,7 @@ ims=createAllImForDenseTraining(opts);
         end
     end
 createTempFolder;
-if ~exist(fullfile(opts.dtsetOpts.datasetDir,'frames'),'dir'),createImageSequence;end;
+% if ~exist(fullfile(opts.dtsetOpts.datasetDir,'frames'),'dir'),createImageSequence;end;
 ftrs=extractFeatureForTrainImg;
-denGts=createDenseTrainImages(opts,ims);
+denGts=createDenseTrainImages(opts);
 end

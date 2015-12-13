@@ -1,5 +1,5 @@
 function calcBestMallDensity
-datasetName='mall';
+datasetName='vivo1';
 % for i=1:n, eval(sprintf('pDen%d=pDen;',i,i));end;
 % trainSettings=struct('method',1,'spacing',2,'nTrees',5,'minLeaf',1000);
 trainSettings=struct('method',1,'spacing',4,'nTrees',5,'minLeaf',1000);
@@ -21,7 +21,13 @@ trainSettings(16)=struct('method',16,'spacing',4,'nTrees',5,'minLeaf',4000);
 trainSettings(17)=struct('method',17,'spacing',4,'nTrees',5,'minLeaf',6000);
 trainSettings(18)=struct('method',18,'spacing',4,'nTrees',5,'minLeaf',7000);
 trainSettings(19)=struct('method',19,'spacing',4,'nTrees',5,'minLeaf',10000);
-trainSettings(20)=struct('method',20,'spacing',4,'nTrees',15,'minLeaf',4000);
+% trainSettings(20)=struct('method',20,'spacing',4,'nTrees',15,'minLeaf',4000);
+% trainSettings(21)=struct('method',21,'spacing',4,'nTrees',10,'minLeaf',15000);
+% trainSettings(22)=struct('method',22,'spacing',4,'nTrees',15,'minLeaf',20000);
+% trainSettings(23)=struct('method',23,'spacing',4,'nTrees',5,'minLeaf',20000);
+% trainSettings(24)=struct('method',24,'spacing',4,'nTrees',5,'minLeaf',40000);
+% trainSettings(25)=struct('method',25,'spacing',4,'nTrees',5,'minLeaf',80000);
+% trainSettings(26)=struct('method',26,'spacing',4,'nTrees',5,'minLeaf',10);
 nTest=numel(trainSettings);methodIdx=(1:nTest)';error={};
 dtsetOpts=initSettings(datasetName);
 
@@ -65,8 +71,7 @@ try
 catch
     estimate=[];
     for i=opts.dtsetOpts.indexTestFile
-        im=getImForDensityPhase(i,opts);
-        denIm=mallden(im,opts);
+        denIm=mallden(i,opts);
         estimate=[estimate sum(denIm(:))];
     end
     save(estPath,'estimate');
