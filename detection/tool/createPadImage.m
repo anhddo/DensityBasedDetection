@@ -35,12 +35,29 @@ for i=1:numel(imPath)
             if opts.isFlip,
                 imwrite(fliplr(subim),fullfile(trainposDir,sprintf('%d_%d_flip.jpg',i,j)));
                 nWritedImg=nWritedImg+1;
-            end;
-            if isfield(opts,'maxWritedFile')&&nWritedImg>opts.maxWritedFile
-                return;
             end
+
         end
     end
+    if isfield(opts,'maxWritedFile')&&nWritedImg>opts.maxWritedFile
+        break;
+    end
+end
+if isfield(opts,'isNoHead') && opts.isNoHead
+   pad=round(opts.H*0.2+opts.padSize);
+   allSubImPath=bbGt('getFiles',{trainposDir});
+   n=numel(allSubImPath);
+   p=randperm(n,round(n*0.2));
+   allSubImPath=allSubImPath(p);
+   for i=1:numel(allSubImPath)
+       subIm=imread(allSubImPath{i});
+       noHeadIm=subIm(pad:end,:,:);
+       noHeadIm=[randi(255,pad,SW,3);noHeadIm];
+%        noHeadIm=imPad(noHeadIm,[pad 0 0 0],'replicate');
+       [~,name,ext]=fileparts(allSubImPath{i});
+       noHeadImPath=fullfile(trainposDir,strcat('noHead',name,ext));
+       imwrite(noHeadIm,noHeadImPath);
+   end
 end
 end
 %%

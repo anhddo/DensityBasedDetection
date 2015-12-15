@@ -1,11 +1,11 @@
 % function ftrs=extractFeature(i,img,pr,train)
-function ftrs=extractFeature(idx,opts)
-im=rgb2gray(getImForDensityPhase(idx,opts));
-if exist(fullfile(opts.dtsetOpts.framesDir,sprintf('seq_%06d.jpg',idx+1)),'file')
-    imNeighbor=rgb2gray(getImForDensityPhase(idx+1,opts));
-else
-    imNeighbor=rgb2gray(getImForDensityPhase(idx-1,opts));
-end
+function ftrs=extractFeature(im,opts)
+% im=rgb2gray(getImForDensityPhase(idx,opts));
+% if exist(fullfile(opts.dtsetOpts.framesDir,sprintf('seq_%06d.jpg',idx+1)),'file')
+%     imNeighbor=rgb2gray(getImForDensityPhase(idx+1,opts));
+% else
+%     imNeighbor=rgb2gray(getImForDensityPhase(idx-1,opts));
+% end
 pr=opts.pDen;
 % staticBg=(medfilt2(imgray,pr.medSize));
 % diffBg=imgray-staticBg; absDiffBg=abs(diffBg);

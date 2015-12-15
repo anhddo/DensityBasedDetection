@@ -8,10 +8,13 @@ if ~exist(opts.resultOpts.resultFile,'file')
     timeFrame=zeros(1,totalImg);
     for imgIdx=1:totalImg
         idx=imgRange(imgIdx);
+        img=getDatasetImg(opts,idx);
         if strcmp(opts.resultOpts.methodName,'DenBased')
-            [time,boxes,~]=denDectectByFrame(idx,opts);
+            [time,boxes,~]=denDectectByFrame(img,opts);
         elseif strcmp(opts.resultOpts.methodName,'PLS')
-            [time,boxes]=plsDetect(idx,opts);
+            [time,boxes]=plsDetect(img,opts);
+        elseif strcmp(opts.resultOpts.methodName,'DenBasedNoPls')
+            [time,boxes]=denDetectNoPls(img,opts);
         end
         fprintf('image %d, time:%f\n',imgRange(imgIdx),time);
         timeFrame(imgIdx)=time;

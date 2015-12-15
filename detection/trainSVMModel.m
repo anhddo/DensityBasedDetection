@@ -25,7 +25,7 @@ if ~exist(stage0Path,'file')
 else
     load(stage0Path);
 end
-nRetrain=1;
+nRetrain=0;
 neg=trainNeg;
 for i=1:nRetrain
     fprintf('Retrain stage %d\n',i);
@@ -64,6 +64,7 @@ trainNeg={};
 H=opts.pDetect.H;
 W=opts.pDetect.W;
 cellSize=opts.pDetect.cellSize;
+
 for s=scale
     sim=imResample(im,s);
     sHog=computeHog(sim,opts.pDetect.hogType);
@@ -77,6 +78,23 @@ for s=scale
 end
 trainNeg=cat(4,trainNeg{:});
 trainNeg=reshape(trainNeg,[],size(trainNeg,4));
+
+negativeDir=fullfile(opts.dtsetOpts.datasetDir,'negative');
+if ~exist(negativeDir,'dir'),mkdir(negativeDir);end;
+count=0;
+for s=scale
+    sim=imResample(im,s);
+    [m,n,~]=size(sim);
+    for c=1:8:n-64
+        for r=1:8:m-128
+            subim=sim(r:r+127,c:c+64,:);
+            count=count+1;
+            filePath=fullfile(negativeDir,sprintf('%d.jpg',count));
+            imwrite(subim,filePath);
+        end
+    end
+    if count>nNeg,break;end;
+end
 end
 
 function SVMModel=trainSVMModel0(trainPos,trainNeg,opts)

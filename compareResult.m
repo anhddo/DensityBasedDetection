@@ -5,10 +5,15 @@ datasetTrain(datasetName)
 opts1=createParameter(datasetName,'DenBased');
 opts1.pDetect.fineThreshold=-0.5;
 opts2=createParameter(datasetName,'PLS');
-applyDetect(opts1);
+opts3=createParameter(datasetName,'DenBasedNoPls');
+opts3.pDetect.fineThreshold=-0.5;
+% applyDetect(opts1);
 applyDetect(opts2);
-prDraw(opts1,opts2);
-timeDraw(opts1,opts2);
+applyDetect(opts3);
+% prDraw(opts1,opts2);
+% timeDraw(opts1,opts2);
+prDraw(opts3,opts2);
+timeDraw(opts3,opts2);
 end
 function timeDraw(opts1,opts2)
 load(opts1.resultOpts.avgTimeFile);
@@ -53,12 +58,7 @@ for i=1:numel(index)
     imFile=fullfile(imgFolderPath,sprintf('im%d.png',index(i)));
     if exist(imFile,'file');continue;end;
     im=getDatasetImg(opts,index(i));
-    close all;
-    figure('Visible','off');imshow(im);hold on;
-    bbApply('draw',gt{i},'r');hold on;
-    detectBox=dt{i};
-%     detectBox(:,5)=[];
-    bbApply('draw',detectBox,'b');
+    bbGt( 'showRes', im, gt{i}, dt{i});
     print(imFile,'-dpng');
 end
 end
