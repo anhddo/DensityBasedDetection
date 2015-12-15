@@ -7,11 +7,11 @@ if ~exist(opts.resultOpts.resultFile,'file')
     bbs=cell(1,totalImg);
     timeFrame=zeros(1,totalImg);
     for imgIdx=1:totalImg
-        img=getDatasetImg(opts,imgRange(imgIdx));
+        idx=imgRange(imgIdx);
         if strcmp(opts.resultOpts.methodName,'DenBased')
-            [time,boxes,~]=denDectectByFrame(img,opts);
+            [time,boxes,~]=denDectectByFrame(idx,opts);
         elseif strcmp(opts.resultOpts.methodName,'PLS')
-            [time,boxes]=plsDetect(img,opts);
+            [time,boxes]=plsDetect(idx,opts);
         end
         fprintf('image %d, time:%f\n',imgRange(imgIdx),time);
         timeFrame(imgIdx)=time;
@@ -29,8 +29,8 @@ end
 if opts.debugOpts.writeBb
     for imgIdx=1:numel(dt)
         bbs=dt{imgIdx};
-        img=loadImage(testFiles{imgIdx},imageType);
-        clf;imshow(img);
+        idx=loadImage(testFiles{imgIdx},imageType);
+        clf;imshow(idx);
         matchInd=bbs(:,6)==1; matchBb=bbs(matchInd,:);
         unMatchInd=bbs(:,6)==0; unMatchBb=bbs(unMatchInd,:);
         bbApply('draw',matchBb,'g',1,'--');

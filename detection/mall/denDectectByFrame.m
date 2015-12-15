@@ -239,7 +239,7 @@ end
 function [centers,denIm0,noiseReduce]=pedestrianCluster(idx,opts)
 denIm=mallden(idx,opts);
 denIm0=denIm;
-t=max(denIm(:))*0.0001;
+t=max(denIm(:))*0.1;
 denIm(denIm<t)=0;
 denIm(denIm>=t)=1;
 

@@ -1,5 +1,5 @@
 function demoFunc(obj,evt,figureObject)
-% setLayout;
+setLayout;
 opts=get(obj,'UserData');
 isDenBased=strcmp(getMethod,'denBased');
 isPLS=strcmp(getMethod,'pls');

@@ -1,55 +1,34 @@
 function calcBestMallDensity
-datasetName='vivo1';
+datasetName='mall';
 % for i=1:n, eval(sprintf('pDen%d=pDen;',i,i));end;
 % trainSettings=struct('method',1,'spacing',2,'nTrees',5,'minLeaf',1000);
-trainSettings=struct('method',1,'spacing',4,'nTrees',5,'minLeaf',1000);
-trainSettings(2)=struct('method',2,'spacing',2,'nTrees',10,'minLeaf',1000);
-trainSettings(3)=struct('method',3,'spacing',2,'nTrees',15,'minLeaf',1000);
-trainSettings(4)=struct('method',4,'spacing',4,'nTrees',5,'minLeaf',1000);
-trainSettings(5)=struct('method',5,'spacing',4,'nTrees',10,'minLeaf',1000);
-trainSettings(6)=struct('method',6,'spacing',4,'nTrees',15,'minLeaf',1000);
-trainSettings(7)=struct('method',7,'spacing',4,'nTrees',5,'minLeaf',100);
-trainSettings(8)=struct('method',8,'spacing',4,'nTrees',5,'minLeaf',200);
-trainSettings(9)=struct('method',9,'spacing',4,'nTrees',5,'minLeaf',400);
-trainSettings(10)=struct('method',10,'spacing',4,'nTrees',5,'minLeaf',600);
-trainSettings(11)=struct('method',11,'spacing',4,'nTrees',5,'minLeaf',1500);
-trainSettings(12)=struct('method',12,'spacing',4,'nTrees',5,'minLeaf',1100);
-trainSettings(13)=struct('method',13,'spacing',4,'nTrees',10,'minLeaf',1000);
-trainSettings(14)=struct('method',14,'spacing',4,'nTrees',15,'minLeaf',2000);
-trainSettings(15)=struct('method',15,'spacing',4,'nTrees',5,'minLeaf',3000);
-trainSettings(16)=struct('method',16,'spacing',4,'nTrees',5,'minLeaf',4000);
-trainSettings(17)=struct('method',17,'spacing',4,'nTrees',5,'minLeaf',6000);
-trainSettings(18)=struct('method',18,'spacing',4,'nTrees',5,'minLeaf',7000);
-trainSettings(19)=struct('method',19,'spacing',4,'nTrees',5,'minLeaf',10000);
-% trainSettings(20)=struct('method',20,'spacing',4,'nTrees',15,'minLeaf',4000);
-% trainSettings(21)=struct('method',21,'spacing',4,'nTrees',10,'minLeaf',15000);
-% trainSettings(22)=struct('method',22,'spacing',4,'nTrees',15,'minLeaf',20000);
-% trainSettings(23)=struct('method',23,'spacing',4,'nTrees',5,'minLeaf',20000);
-% trainSettings(24)=struct('method',24,'spacing',4,'nTrees',5,'minLeaf',40000);
-% trainSettings(25)=struct('method',25,'spacing',4,'nTrees',5,'minLeaf',80000);
-% trainSettings(26)=struct('method',26,'spacing',4,'nTrees',5,'minLeaf',10);
-nTest=numel(trainSettings);methodIdx=(1:nTest)';error={};
+%spacing nTree minLeaf
+trainSettings=getTrainSettings(datasetName);
+% trainSettings(:,2)=4;
+nTest=(size(trainSettings,1));methodIdx=(1:nTest)';MAE={};
 dtsetOpts=initSettings(datasetName);
 
 for i=1:nTest
-%     pDen(i)=initDensityParameter(datasetName,methodPara(i));
-    opts=allParameter(datasetName,trainSettings(i));
+    %     pDen(i)=initDensityParameter(datasetName,methodPara(i));
+    setting=trainSettings(i,:);
+    setting=struct('method',i,'spacing',setting(1),'nTrees',setting(2),'minLeaf',setting(3));
+    opts=allParameter(datasetName,setting);
     storeDir=fullfile(opts.dtsetOpts.matDir,opts.datasetName);
     if ~exist(storeDir,'dir'),mkdir(storeDir);end;
-%     disp(opts.pDen.methodNo);
+    %     disp(opts.pDen.methodNo);
     opts.dtsetOpts.pDenPath=fullfile(storeDir,sprintf('pDen%d.mat',opts.pDen.methodNo));
     opts.dtsetOpts.forestPath=fullfile(storeDir,sprintf('Forest%d.mat',opts.pDen.methodNo));
-    error{i}=test1(opts,storeDir);
+    MAE{i}=test1(opts,storeDir);
 end
-error=cat(1,error{:});
-No=[trainSettings.method]';
-spacing=[trainSettings.spacing]';
-nTrees=[trainSettings.nTrees]';
-minLeaf=[trainSettings.minLeaf]';
-T=table(No,spacing,nTrees,minLeaf,error);
+MAE=cat(1,MAE{:});
+No=(1:nTest)';
+spacing=trainSettings(:,1);
+nTrees=trainSettings(:,2);
+minLeaf=trainSettings(:,3);
+T=table(No,spacing,nTrees,minLeaf,MAE);
 disp(T);
 % disp([methodIdx err]);
-[~,idx]=min(error);
+[~,idx]=min(MAE);
 bestDenFile=fullfile(fullfile(storeDir,sprintf('pDen%d.mat',idx)));
 denPath=fullfile(fullfile(opts.dtsetOpts.matDir,sprintf('%spDen.mat',opts.datasetName)));
 copyfile(bestDenFile,denPath);
@@ -82,10 +61,43 @@ close all;
 % hold on;plot(count,'g');
 % disp(estimate);
 % disp(count');
-plot(estimate,'b');
-hold on;
-plot(opts.pDen.count,'r');
-filepath=fullfile(storeDir,sprintf('f%d.png',opts.pDen.methodNo));
-print(filepath,'-dpng');
-err=mean(abs(estimate-opts.pDen.count));
+filePath=fullfile(storeDir,sprintf('f%d.png',opts.pDen.methodNo));
+if ~exist(filePath,'file')
+    close all;
+    figure('Visible','off');
+    plot(estimate,'b','LineWidth',2);
+    hold on;
+    plot(opts.pDen.count,'r','LineWidth',2);
+    xlabel('Frame');ylabel('Number of pedestrians');
+    print(filePath,'-dpng');
+end
+err=mean(abs((estimate-opts.pDen.count)));
+end
+function trainSettings=getTrainSettings(datasetName)
+if strcmp(datasetName,'mall')
+    trainSettings=[2 5 100;
+        2 5 500;2 5 1000; 2 5 1500;
+        4 5 100;4 10 100; 4 15 100;
+        4 20 100; 4 5 200; 4 5 300;
+        4 5 400;4 5 400; 4 5 500;
+        4 5 1000; 4 5 1500;4 5 2000;4 5 2500;
+        4 5 3000;4 5 5000;4 5 7000;4 5 10000;4 5 15000;4 5 20000;
+        4 5 20000; 4 5 25000; 4 5 30000; 4 4 20000;
+        ];
+elseif strcmp(datasetName,'vivo1')
+    trainSettings=[
+        4 5 100;4 10 100; 4 15 100;
+%         4 20 100; 4 5 200; 4 5 300;
+%         4 5 400;4 5 400; 4 5 500;
+4 4 1000; 4 4 1500;4 4 2000;4 4 2500;
+        4 5 1000; 4 5 1500;4 5 2000;4 5 2500;
+%          8 5 1000; 8 5 1500;8 5 2000;8 5 2500;
+        4 5 3000;4 5 5000;4 5 7000;4 5 10000;4 5 15000;4 5 20000;
+        4 5 20000; 4 5 25000; 4 5 30000;
+%         8 4 1500;
+        4 5 60000;
+        4 5 120000;
+        ];
+    trainSettings(:,1)=8;
+end
 end

@@ -23,7 +23,7 @@ elseif strcmp(type,'1x2')
     pos(1:2,:)=[0 0 0.5 1;0.5 0 0.5 1];
     visible={'on','on','off','off'};
 elseif strcmp(type,'2x1')
-    pos(1:2,:)=[0 0 1 0.4;0.1 0.6 0.7 0.5];
+    pos(1:2,:)=[0 0 1 0.4;0.0 0.5 1 0.5];
     visible={'on','on','off','off'};
 end
 for i=1:nAxes

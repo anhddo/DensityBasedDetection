@@ -9,7 +9,10 @@ if strcmp(datasetName,'mall')
     opts.plsChoosedImg=plsPatchTrain;
 elseif strcmp(datasetName,'vivo1')
     opts=init(datasetName,'vivo_dataset1','vivoTrain_MAH00183.mat','vivoTest_MAH00183.mat');
-    opts.scaleRange=1./(1.06.^(0:15));
+    opts.scaleRange=1./(1.06.^(0:20));
+    load(fullfile(opts.datasetDir,'choosedImg.mat'));
+    opts.svmChoosedImg=choosedImg;
+    opts.plsChoosedImg=choosedImg;
 end
 end
 function opts=init(datasetName,datasetDirName,gtName,gtTestName)

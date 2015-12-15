@@ -25,9 +25,15 @@ elseif strcmp(datasetName,'vivo1')
         count(i)=sum(idx);
     end
     
-    load(fullfile(dtsetOpts.datasetDir,'vivoTrainDensityGt8.mat'));
+    load(fullfile(dtsetOpts.datasetDir,'vivoTrainDensityGt_1_61_500.mat'));
 %     ind=unique(newOriData(newOriData(:,1)>0));
-    
+%     newOriData1=[];
+%     for i=1:size(newOriData,1)
+%         row=newOriData(i,:);
+%         if sum(row(1)==1:61:500)==1
+%             newOriData1=[newOriData1;row];
+%         end
+%     end
 	load(fullfile(dtsetOpts.datasetDir,'perspective.mat'));
     roi=ones(size(bggray));
 end

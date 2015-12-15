@@ -12,9 +12,9 @@ if strcmp(datasetName,'vivo1')
     a=246/109;
     pMapN=zeros(720,1280);
     bot=pos1(2)+pos1(4)/2;%bot
-    top=pos2(2)+pos(4)/2;%top
+    top=pos2(2)+pos2(4)/2;%top
     X=(bot-top);
-    a=pos2(4)/pos1(4);
+    a=pos2(4)/pos1(4);a=1/a;
     Y=1-a;
     for i=1:720
         y=Y/X*(i-bot)+1;
