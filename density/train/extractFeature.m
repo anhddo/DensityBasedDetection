@@ -1,5 +1,6 @@
 % function ftrs=extractFeature(i,img,pr,train)
 function ftrs=extractFeature(im,opts)
+imgray=rgb2gray(im);
 % im=rgb2gray(getImForDensityPhase(idx,opts));
 % if exist(fullfile(opts.dtsetOpts.framesDir,sprintf('seq_%06d.jpg',idx+1)),'file')
 %     imNeighbor=rgb2gray(getImForDensityPhase(idx+1,opts));
@@ -13,13 +14,13 @@ h1=fspecial('gaussian',[3 3],0.5);
 h2=fspecial('gaussian',[3 3],1);
 % G1=imfilter(im,h1); G2=imfilter(im,h2);
 
-[Gx,Gy]=vl_grad(im);
-[m,n]=size(im);
+[Gx,Gy]=vl_grad(imgray);
+[m,n]=size(imgray);
 ftrs=zeros(m,n,4);
 % bgGray=medfilt2(im,[3 3]);
-ftrs(:,:,1)=abs(pr.bggray-im);
+ftrs(:,:,1)=abs(pr.bggray-imgray);
 % ftrs(:,:,2)=abs(im-imNeighbor);
-ftrs(:,:,2)=im;
+ftrs(:,:,2)=imgray;
 ftrs(:,:,3)=Gx;
 ftrs(:,:,4)=Gy;
 % ftrs(:,:,5)=abs(G1-G2);

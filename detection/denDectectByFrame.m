@@ -29,7 +29,7 @@ end
 
 function [boxes,plsDrawingStuff]=denDetect(img,pesClust,opts)
 [w,h,range,bPad,padIm]=initParameter(opts.pDetect);
-createHOGImage(opts.pDetect);
+hogIms=createHOGImage(opts.pDetect);
 boxes={};
 %use for plsDrawingStuff
 for i=1:numel(opts.pDetect.scaleRange)
@@ -202,15 +202,6 @@ end
         end
     end
 
-    function createHOGImage(opts)
-        nScale=numel(opts.scaleRange);
-        hogIms=cell(1,nScale);
-        for i=1:nScale
-            s=opts.scaleRange(i);
-            imS=imResample(padIm,s);
-            hogIms{i}=computeHog(imS,opts.hogType);
-        end
-    end
 
     function [w,h,range,bPad,padImg]=initParameter(opts)
         w=opts.W/opts.cellSize;h=opts.H/opts.cellSize;

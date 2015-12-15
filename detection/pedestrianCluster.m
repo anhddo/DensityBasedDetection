@@ -1,6 +1,6 @@
 %%
-function [centers,denIm0,noiseReduce]=pedestrianCluster(img,opts)
-
+function [centers,denIm0,noiseReduce]=pedestrianCluster(img0,opts)
+img=img0(1:opts.pDen.spacing:end,1:opts.pDen.spacing:end,:);
 denIm=mallden(img,opts);
 denIm0=denIm;
 t=max(denIm(:))*0.1;

@@ -7,7 +7,7 @@ for i=range
         x2=x1+w-1; y2=y1+h-1;
         if x1>0 && x2<=size(hogFeatures,2) && y1>0 && y2<=size(hogFeatures,1)
             features{end+1}=hogFeatures(y1:y2,x1:x2,:);
-            centerDense{end+1}=[(x+i-1)*cellSize+1 (y+j-1)*cellSize+1]';
+            centerDense{end+1}=[(x+i)*cellSize (y+j)*cellSize]';
         end
     end
 end

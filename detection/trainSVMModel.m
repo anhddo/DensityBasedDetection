@@ -25,7 +25,7 @@ if ~exist(stage0Path,'file')
 else
     load(stage0Path);
 end
-nRetrain=0;
+nRetrain=3;
 neg=trainNeg;
 for i=1:nRetrain
     fprintf('Retrain stage %d\n',i);

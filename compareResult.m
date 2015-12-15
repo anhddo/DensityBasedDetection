@@ -53,14 +53,14 @@ function [recall,precision]=PRplot(opts)
 [recall,precision,~,~] = bbGt('compRoc',gt,dt,0);
 index=opts.dtsetOpts.indexTestFile;
 imgFolderPath=fullfile(opts.resultOpts.resultPath,'img',opts.resultOpts.methodName);
-if ~exist(imgFolderPath,'dir');mkdir(imgFolderPath);end;
-for i=1:numel(index)
-    imFile=fullfile(imgFolderPath,sprintf('im%d.png',index(i)));
-    if exist(imFile,'file');continue;end;
-    im=getDatasetImg(opts,index(i));
-    bbGt( 'showRes', im, gt{i}, dt{i});
-    print(imFile,'-dpng');
-end
+% if ~exist(imgFolderPath,'dir');mkdir(imgFolderPath);end;
+% for i=1:numel(index)
+%     imFile=fullfile(imgFolderPath,sprintf('im%d.png',index(i)));
+%     if exist(imFile,'file');continue;end;
+%     im=getDatasetImg(opts,index(i));
+%     bbGt( 'showRes', im, gt{i}, dt{i},'lw',1);
+%     print(imFile,'-dpng');
+% end
 end
 
 function chooseim

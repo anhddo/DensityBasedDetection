@@ -1,6 +1,5 @@
 % function boxes=plsSL(im,SVMModel,BETA,pPls)
-function [time,boxes]=plsDetect(idx,opts)
-img=getDatasetImg(opts,idx);
+function [time,boxes]=plsDetect(img,opts)
 e=tic;
 [m,n,~]=size(img);
 padFullIm=floor(m/16);img=imPad(img,padFullIm,'replicate');
