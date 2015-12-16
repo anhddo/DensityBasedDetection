@@ -58,7 +58,8 @@ end
 % hold on; vl_plotpoint(center1,'.r');
 
 
-centersDense={}; range=-1:1;
+centersDense={};
+range=-1:1;
 
 for i=1:numel(center)
     [score1,center1]=denseSearch(hogFeature,center{i},w,h,opts.model.svm,...

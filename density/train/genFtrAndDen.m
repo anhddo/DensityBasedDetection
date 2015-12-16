@@ -3,7 +3,8 @@ function [ftrs,denGts]=genFtrAndDen(opts)
     function ftrs=extractFeatureForTrainImg
         ftrs=cell(1,opts.pDen.nTrnIm);
         for i=1:opts.pDen.nTrnIm
-            ftrs{i}=extractFeature(opts.pDen.imIdx(i),opts);
+            idx=opts.pDen.imIdx(i);
+            ftrs{i}=extractFeature(getImForDensityPhase(idx,opts),opts);
         end
     end
 

@@ -36,6 +36,10 @@ elseif strcmp(datasetName,'vivo1')
 %     end
 	load(fullfile(dtsetOpts.datasetDir,'perspective.mat'));
     roi=ones(size(bggray));
+elseif strcmp(datasetName,'crescent')
+    load(fullfile(dtsetOpts.datasetDir,'crescentDenGt.mat'));
+    pMapN=ones(720,1280);roi=pMapN;
+    count=0;
 end
 bggray=bggray(1:trainOpts.spacing:end,1:trainOpts.spacing:end);
 pMapN=pMapN(1:trainOpts.spacing:end,1:trainOpts.spacing:end);

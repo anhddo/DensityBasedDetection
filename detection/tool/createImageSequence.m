@@ -1,6 +1,7 @@
 % p=allParameter('vivo1');
-datasetDir='vivo_dataset1';
-path=fullfile(datasetDir,'MAH00183.MP4');
+% datasetDir='vivo_dataset1';
+datasetDir='crescent_dataset';
+path=fullfile(datasetDir,'MAH00185.MP4');
 shuttleVideo=VideoReader(path);
 frameDir=fullfile(datasetDir,'frames');
 if ~exist(frameDir,'dir'),mkdir(frameDir);end;

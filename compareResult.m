@@ -6,7 +6,8 @@ opts1=createParameter(datasetName,'DenBased');
 opts1.pDetect.fineThreshold=-0.5;
 opts2=createParameter(datasetName,'PLS');
 opts3=createParameter(datasetName,'DenBasedNoPls');
-opts3.pDetect.fineThreshold=-0.5;
+opts3.pDetect.fineThreshold=-0.2;
+opts.pDetect.threshold=-1;
 % applyDetect(opts1);
 applyDetect(opts2);
 applyDetect(opts3);
@@ -20,21 +21,23 @@ load(opts1.resultOpts.avgTimeFile);
 denTime=avgtime;
 load(opts2.resultOpts.avgTimeFile);
 plsTime=avgtime;
-figure;
+close all;figure;
 h(1)=bar(gca,[denTime plsTime],'r','BarWidth',0.5);
 set(gca,'XTickLabel',{'Proposed method','PLS'});
 hold on;
 h(2)=bar(gca,2,plsTime,'b','BarWidth',0.5);
 ylabel('Time(s)');
+print(fullfile(opts1.resultOpts.resultPath,'time.png'),'-dpng');
 end
 function prDraw(opts1,opts2)
-figure;
+close all;figure;
 [recall,precision]=PRplot(opts1);
 plot(precision,recall,'r','LineWidth',2);
 [recall,precision]=PRplot(opts2);
 hold on; plot(precision,recall,'b','LineWidth',2);
 xlabel('precision'); ylabel('recall');
 legend('Proposed method','PLS','Location','southwest');
+print(fullfile(opts1.resultOpts.resultPath,'pr.png'),'-dpng');
 end
 function opts=createParameter(datasetName,methodName)
 opts=loadTrainModel(datasetName);
@@ -49,18 +52,23 @@ opts.resultOpts=resultOpts;
 end
 function [recall,precision]=PRplot(opts)
 [gt,dt]=bbGt('loadAll',opts.resultOpts.gtTextFolder,opts.resultOpts.resultFile);
-[gt,dt] = bbGt('evalRes',gt,dt);
+[gt,dt] = bbGt('evalRes',gt,dt,0.3);
 [recall,precision,~,~] = bbGt('compRoc',gt,dt,0);
 index=opts.dtsetOpts.indexTestFile;
 imgFolderPath=fullfile(opts.resultOpts.resultPath,'img',opts.resultOpts.methodName);
-% if ~exist(imgFolderPath,'dir');mkdir(imgFolderPath);end;
-% for i=1:numel(index)
-%     imFile=fullfile(imgFolderPath,sprintf('im%d.png',index(i)));
-%     if exist(imFile,'file');continue;end;
-%     im=getDatasetImg(opts,index(i));
+% return;
+if ~exist(imgFolderPath,'dir');mkdir(imgFolderPath);end;
+for i=1:numel(index)
+    imFile=fullfile(imgFolderPath,sprintf('im%d.png',index(i)));
+    if exist(imFile,'file');continue;end;
+    im=getDatasetImg(opts,index(i));
+    close all; figure('Visible','off');
+    imshow(im);
 %     bbGt( 'showRes', im, gt{i}, dt{i},'lw',1);
-%     print(imFile,'-dpng');
-% end
+   bbApply('draw',gt{i},'r');hold on;
+    bbApply('draw',dt{i}(:,1:4),'b');
+    print(imFile,'-dpng');
+end
 end
 
 function chooseim

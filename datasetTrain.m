@@ -1,6 +1,5 @@
 function datasetTrain(dataset)
 opts=allParameter(dataset);
-% densityTraining(opts);
-% [resultPath,timeResultPath]=densityDetection('densityVivo','vivo');
+densityTraining(opts);
 trainSVMModel(opts);
 plsTrain(opts)

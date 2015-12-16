@@ -62,7 +62,7 @@ handles.saveReminderCounter = 0;
 handles.name_append='';
 handles.path2Folder=get(handles.folderPath,'String');
 % handles.matfile=fullfile('..','matfile','groundtruth.mat');
-handles.matfile=fullfile('..','vivo_dataset1','vivoTrain_MAH00183.mat');
+handles.matfile=fullfile('..','crescent_dataset','crescentDenGt.mat');
 % handles.matfile=fullfile('..','matfile','newOriData_anh.mat');
 if (exist(handles.matfile,'file'))
     load(handles.matfile);
@@ -203,7 +203,7 @@ function btnNext_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles = guidata(hObject);
-handles.imageID = handles.imageID+1;
+handles.imageID = handles.imageID+5;
 
 %Load image and display bounding/ori information
 imgName = ['seq_' sprintf('%06d', handles.imageID) '.jpg'];
@@ -226,7 +226,7 @@ function btnPrevious_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles = guidata(hObject);
-handles.imageID = handles.imageID-1;
+handles.imageID = handles.imageID-51;
 if (handles.imageID <= 0)
     handles.imageID = 1;
 end
@@ -350,9 +350,9 @@ if (handles.currentCol == 5)
 end
 
 if (handles.currentCol == 9)
-   infoDisplay (handles.data, r, 0)
+   infoDisplay (handles.data, r, 0);
    %Move to another row
    
 end
-disp(handles.data(r,:));
+% disp(handles.data(r,:));
 guidata(hObject,handles);

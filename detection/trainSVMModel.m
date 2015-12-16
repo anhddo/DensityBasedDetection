@@ -25,7 +25,7 @@ if ~exist(stage0Path,'file')
 else
     load(stage0Path);
 end
-nRetrain=3;
+nRetrain=1;
 neg=trainNeg;
 for i=1:nRetrain
     fprintf('Retrain stage %d\n',i);
@@ -55,7 +55,7 @@ end
 function trainNeg=mallExtractNegHog(opts)
 trainPosFiles=bbGt('getFiles',{opts.pGenSVM.trainPosDir});
 nPos=numel(trainPosFiles);
-nNeg=nPos*5;
+nNeg=nPos*10;
 
 fprintf('Gathering negative subwindows:\n');
 im=loadImage(fullfile(opts.dtsetOpts.datasetDir,'background.jpg'),opts.pDetect.imageType);
