@@ -13,3 +13,5 @@
 !vivodataset/vivoTrainDensityGt.mat
 !vivo_dataset1/*.mat
 vivo_dataset1/perspective.mat
+!crescent_dataset/*.mat
+
