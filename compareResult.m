@@ -43,18 +43,22 @@ for i=1:numel(optsList)
     applyDetect(optsList{i});
 end
 drawStyle={'r','g','b'};
-prDraw(optsList,drawStyle);
+% prDraw(optsList,drawStyle);
+timeDraw(optsList)
 end
 
-function timeDraw(opts)
-load(opts.resultOpts.avgTimeFile);
+function timeDraw(optsList)
+load(optsList{1}.resultOpts.avgTimeFile);denTime=avgtime;
+load(optsList{2}.resultOpts.avgTimeFile);plsTime=avgtime;
+load(optsList{3}.resultOpts.avgTimeFile);noplsTime=avgtime;
 figure;
-h(1)=bar(gca,[denTime plsTime],'r','BarWidth',0.5);
-set(gca,'XTickLabel',{'Proposed method','PLS'});
+h(1)=bar(gca,[denTime plsTime noplsTime],'r','BarWidth',0.5);
+set(gca,'XTickLabel',{'Proposed method','PLS','no PLS'});
 hold on;
-h(2)=bar(gca,2,plsTime,'b','BarWidth',0.5);
+h(2)=bar(gca,2,plsTime,'g','BarWidth',0.5);
+h(3)=bar(gca,2,noplsTime,'g','BarWidth',0.5);
 ylabel('Time(s)');
-print(fullfile(opts.resultOpts.resultPath,'time.png'),'-dpng');
+print(fullfile(optsList{1}.resultOpts.resultPath,'time.png'),'-dpng');
 end
 function prDraw(optsList,drawOpts)
 figure;
@@ -72,7 +76,7 @@ hold on;
     plot(precision,recall,drawOpts{i},'LineWidth',1);
 end
 xlabel('precision'); ylabel('recall');
-legend('Proposed method','PLS','NoPls','Location','southwest');
+legend('DenBased','PLS','Denbase NoPls','Location','southwest');
 print(fullfile(optsList{1}.resultOpts.resultPath,'pr.png'),'-dpng');
 end
 

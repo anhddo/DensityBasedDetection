@@ -22,7 +22,7 @@ function varargout = demoGUI(varargin)
 
 % Edit the above text to modify the response to help demo
 
-% Last Modified by GUIDE v2.5 17-Dec-2015 16:51:21
+% Last Modified by GUIDE v2.5 18-Dec-2015 00:45:09
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -72,6 +72,8 @@ switch v
         tag='mall';
     case 2
         tag='vivo1';
+    case 3
+        tag='crescent';
 end
 % --- Outputs from this function are returned to the command line.
 function varargout = demo_OutputFcn(hObject, eventdata, handles) 
@@ -98,7 +100,8 @@ function pausebtn_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 stop(handles.timer);
-
+set(handles.isAutorun,'Value',0);
+% set(findobj('Tag','isAutorun'),'Value',0);
 
 % --- Executes during object deletion, before destroying properties.
 function figure1_DeleteFcn(hObject, eventdata, handles)
@@ -118,14 +121,13 @@ function estbox_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of estbox
 
 
-% --- Executes on button press in detectChBox.
-function detectChBox_Callback(hObject, eventdata, handles)
-% hObject    handle to detectChBox (see GCBO)
+% --- Executes on button press in isGtBox.
+function isGtBox_Callback(hObject, eventdata, handles)
+% hObject    handle to isGtBox (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of detectChBox
-
+% Hint: get(hObject,'Value') returns toggle state of isGtBox
+start(handles.timer);
 % --- Executes on button press in checkbox3.
 function checkbox3_Callback(hObject, eventdata, handles)
 % hObject    handle to checkbox3 (see GCBO)
@@ -249,6 +251,10 @@ if get(hObject,'Value')
 else
     handles.grouprbtn.Children=setGroupAttribute(handles.grouprbtn.Children,'Enable','off');
 end
+if get(handles.densityBasedNonPLSrbtn,'Value')
+    set(handles.plsrbtn,'Enable','off');
+end
+start(handles.timer);
 
 function frameId_Callback(hObject, eventdata, handles)
 opts=get(handles.timer,'UserData');
@@ -340,3 +346,26 @@ function isDetectBox_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of isDetectBox
+
+
+% --- Executes on button press in isAutorun.
+function isAutorun_Callback(hObject, eventdata, handles)
+% hObject    handle to isAutorun (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of isAutorun
+if get(hObject,'Value')
+    set(handles.stepByStepCb,'Enable','off');
+else
+    set(handles.stepByStepCb,'Enable','on');
+end
+
+
+% --- Executes on button press in densityBasedNonPLSrbtn.
+function densityBasedNonPLSrbtn_Callback(hObject, eventdata, handles)
+% hObject    handle to densityBasedNonPLSrbtn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of densityBasedNonPLSrbtn

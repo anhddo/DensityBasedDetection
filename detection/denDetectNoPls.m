@@ -1,6 +1,7 @@
-function [time,allBox]=denDetectNoPls(img,opts)
+function [time,allBox,dispStuff]=denDetectNoPls(img,opts)
 e=tic;
-[pesClust,~,~]=pedestrianCluster(img,opts);
+[pesClust,denIm,noiseReduce]=pedestrianCluster(img,opts);
+dispStuff=v2struct(denIm,noiseReduce,pesClust);
 imgPad=floor(size(img,1)/16);padImg=imPad(img,imgPad,'replicate');
 clustPad=pesClust+imgPad;
 % imshow(img);hold on; plot(pesClust(1,:),pesClust(2,:),'*');
