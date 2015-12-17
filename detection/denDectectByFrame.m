@@ -29,7 +29,7 @@ end
 
 function [boxes,plsDrawingStuff]=denDetect(img,pesClust,opts)
 [w,h,range,bPad,padIm]=initParameter(opts.pDetect);
-hogIms=createHOGImage(opts.pDetect);
+hogIms=createHOGImage(padIm,opts);
 boxes={};
 %use for plsDrawingStuff
 for i=1:numel(opts.pDetect.scaleRange)

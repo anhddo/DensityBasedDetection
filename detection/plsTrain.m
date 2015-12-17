@@ -8,27 +8,27 @@ testPlsImageDir=opts.pTrainPls.testPlsImageDir;
 if ~exist(testPlsImageDir,'dir')
     createGenImage(testPlsImageDir,opts.pGenPlsTest);
 end
-choosenPlsTrain=fullfile(opts.dtsetOpts.datasetDir,'plsTrainImage');
-testPlsFiles=bbGt('getFiles',{testPlsImageDir});
+% choosenPlsTrain=fullfile(opts.dtsetOpts.datasetDir,'plsTrainImage');
+% testPlsFiles=bbGt('getFiles',{testPlsImageDir});
 % for i=400:numel(testPlsFiles)
 %     delete(testPlsFiles{i});
 % end
 fprintf('pls training\n');
-[BETA,rmsTrain,rmsTest]=plsTraining(choosenPlsTrain,testPlsImageDir,opts);
+[BETA,rmsTrain,rmsTest]=plsTraining(opts);
 fprintf('rms train [%f %f]\n',rmsTrain(1),rmsTrain(2));
 fprintf('rms test [%f %f]\n',rmsTest(1),rmsTest(2));
 save(opts.dtsetOpts.BetaPath,'BETA');
 end
 
-function [BETA,rms1,rms2]=plsTraining(trainFolder,testFolder,p)
-[Xpls,Ypls]=plsGetPartHog(trainFolder,p);
-[XL,YL,XS,YS,BETA,PCTVAR,MSE]=plsregress(Xpls,Ypls,60);
+function [BETA,rms1,rms2]=plsTraining(opts)
+[Xpls,Ypls]=plsGetPartHog(opts.pTrainPls.trainPlsImageDir,opts);
+[~,~,~,~,BETA,~,~]=plsregress(Xpls,Ypls,60);
 
 %% test on training Data
 rms1=testPLSModel(Xpls,Ypls,BETA);
 clear Xpls Ypls;
 %% test on Test Data
-[Xtest,Ytest]=plsGetPartHog(testFolder,p);
+[Xtest,Ytest]=plsGetPartHog(opts.pTrainPls.testPlsImageDir,opts);
 rms2=testPLSModel(Xtest,Ytest,BETA);
 end
 %%

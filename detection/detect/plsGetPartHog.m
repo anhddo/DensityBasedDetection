@@ -1,5 +1,4 @@
 function [Xpls,Ypls]=plsGetPartHog(folder,opts)
-v2struct(opts);
 files=bbGt('getFiles',{folder});
 Xpls={};Ypls={};
 for i=1:numel(files)

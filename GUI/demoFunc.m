@@ -1,19 +1,21 @@
 function demoFunc(obj,evt,figureObject)
-setLayout;
+[isDenBased,isDenBasedNoPls,isPLS]=methodOption(figureObject);
+setLayout(isDenBased,isDenBasedNoPls,isPLS,figureObject);
 opts=get(obj,'UserData');
-isDenBased=strcmp(getMethod,'denBased');
-isPLS=strcmp(getMethod,'pls');
 img=getDatasetImg(opts,getFrameId(opts));
 if isDenBased
-    [time,bbs,dispStuff]=denDectectByFrame(getFrameId(opts),opts);
+    [time,bbs,dispStuff]=denDectectByFrame(img,opts);
+elseif isDenBasedNoPls
+    [time,bbs]=denDetectNoPls(img,opts);
 elseif isPLS
     [time,bbs]=plsDetect(img,opts);
 end
-opts.gui.timePerIm=[opts.gui.timePerIm time];
-denBasedDraw;
-plsDraw;
-updateFrameIdOnGUI;
-set(obj,'UserData',opts);
+disp(1);
+% opts.gui.timePerIm=[opts.gui.timePerIm time];
+% denBasedDraw;
+% plsDraw;
+% updateFrameIdOnGUI(opts,figureObject);
+% set(obj,'UserData',opts);
 %% nested function
     function plsDraw
         if isPLS
@@ -23,31 +25,8 @@ set(obj,'UserData',opts);
             increaseFrameId;
         end
     end
-    function denBasedDraw
-        if isDenBased
-            if isStepByStep
-                setAxesPos('2x1',figureObject);
-                enableGroupRbtnAndStopTimer
-                drawOrinalImg(1);
-                drawStepOption;
-            else
-                setAxesPos('2x2',figureObject);
-                drawOrinalImg(2);
-                drawEstimationGraph;
-                plotTime(4);
-                drawDetectionBox;
-                increaseFrameId;
-            end
-        end
-    end
-    function method=getMethod
-        handles=guidata(figureObject);
-        if get(handles.densityBasedrbtn,'Value')
-            method='denBased';
-        else
-            method='pls';
-        end
-    end
+    
+    
     function drawEstimationGraph
         axesObj=getAxes(figureObject,1);
         denEst=opts.gui.denEst;
@@ -84,28 +63,14 @@ set(obj,'UserData',opts);
         imshow(img,'Parent',getAxes(figureObject,axesId));
     end
 
-    function v=isStepByStep
-        handles=guidata(figureObject);
-        sbsBtn=findobj(handles.controlPanel,'Tag','stepByStepCb');
-        v=get(sbsBtn,'Value');
-    end
+    
 
     function increaseFrameId
         opts.gui.iFrame=opts.gui.iFrame+1;
     end
 
-    function updateFrameIdOnGUI
-        frameNumber=opts.dtsetOpts.indexTestFile(opts.gui.iFrame);
-        setFigureHandle('attribute',figureObject,'frameId','String',frameNumber);
-    end
-    function setLayout
-        if isStepByStep
-            setAxesPos('2x1',figureObject);
-            enableGroupRbtnAndStopTimer
-        else
-            setAxesPos('2x2',figureObject);
-        end;
-    end
+
+    
     function enableGroupRbtnAndStopTimer
         handles=guidata(figureObject);
         handles.grouprbtn.Children=setGroupAttribute(handles.grouprbtn.Children,'Enable','on');
@@ -220,4 +185,56 @@ dispNoiseReduce=get(handles.noiserbtn,'Value');
 dispClust=get(handles.clustrbtn,'Value');
 dispPls=get(handles.plsrbtn,'Value');
 end
+function setLayout(isDenBased,isDenBasedNoPls,isPLS,figureObject)
+if isStepByStep(figureObject)
+    setAxesPos('2x1',figureObject);
+    enableGroupRbtnAndStopTimer
+else
+    if isDenBased||isDenBasedNoPls
+        setAxesPos('3',figureObject);
+    end
+end;
+end
+function v=isStepByStep(figureObject)
+handles=guidata(figureObject);
+sbsBtn=findobj(handles.controlPanel,'Tag','stepByStepCb');
+v=get(sbsBtn,'Value');
+end
+function updateFrameIdOnGUI(figureObject,opts)
+if opts.gui.iFrame> numel(opts.dtsetOpts.indexTestFile);
+    opts.gui.iFrame=1;
+end
+frameNumber=opts.dtsetOpts.indexTestFile(opts.gui.iFrame);
+setFigureHandle('attribute',figureObject,'frameId','String',frameNumber);
+end
+function method=getMethod
+end
+    
+function [isDenBased,isDenBasedNoPls,isPLS]=methodOption(figureObject)
+isDenBased=false;isDenBasedNoPls=false;isPLS=false;
+handles=guidata(figureObject);
+if get(handles.densityBasedrbtn,'Value'),isDenBased=true;
+elseif get(handles.densityBasedNonPLSrbtn,'Value'),isDenBasedNoPls=true;
+else isPLS=true;
+end
+end
 
+function denBasedDraw(figureObject)
+if isStepByStep(figureObject)
+else
+end
+if isDenBased
+    
+        setAxesPos('2x1',figureObject);
+        enableGroupRbtnAndStopTimer
+        drawOrinalImg(1);
+        drawStepOption;
+    else
+        setAxesPos('2x2',figureObject);
+        drawOrinalImg(2);
+        drawEstimationGraph;
+        plotTime(4);
+        drawDetectionBox;
+        increaseFrameId;
+end
+end

@@ -18,13 +18,7 @@ if strcmp(datasetName,'mall')
     roi=roi.mask;
 elseif strcmp(datasetName,'vivo1')
     load(fullfile(dtsetOpts.datasetDir,'vivoTest_MAH00183.mat'));
-    range=unique(newOriData(newOriData(:,1)>0));
-    count=zeros(1,numel(range));
-    for i=1:numel(range)
-        idx=newOriData(:,1)==range(i);
-        count(i)=sum(idx);
-    end
-    
+    count=createCount(newOriData);
     load(fullfile(dtsetOpts.datasetDir,'vivoTrainDensityGt_1_61_500.mat'));
 %     ind=unique(newOriData(newOriData(:,1)>0));
 %     newOriData1=[];
@@ -37,9 +31,10 @@ elseif strcmp(datasetName,'vivo1')
 	load(fullfile(dtsetOpts.datasetDir,'perspective.mat'));
     roi=ones(size(bggray));
 elseif strcmp(datasetName,'crescent')
+    load(fullfile(dtsetOpts.datasetDir,'crescentTest.mat'));
+    count=createCount(newOriData);
     load(fullfile(dtsetOpts.datasetDir,'crescentDenGt.mat'));
     pMapN=ones(720,1280);roi=pMapN;
-    count=0;
 end
 bggray=bggray(1:trainOpts.spacing:end,1:trainOpts.spacing:end);
 pMapN=pMapN(1:trainOpts.spacing:end,1:trainOpts.spacing:end);
@@ -66,4 +61,13 @@ opts=struct('nTrnIm',nTrnIm,...
     'useBoxMask',0,'gaussSize',7,'sigma',2,'spacing',trainOpts.spacing,...
     'nTrees',trainOpts.nTrees,'minLeaf',trainOpts.minLeaf,...
     'methodNo',trainOpts.method);
+end
+
+function count=createCount(newOriData)
+range=unique(newOriData(newOriData(:,1)>0));
+count=zeros(1,numel(range));
+for i=1:numel(range)
+    idx=newOriData(:,1)==range(i);
+    count(i)=sum(idx);
+end
 end

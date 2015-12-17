@@ -19,6 +19,9 @@ if strcmp(type,'2x2')
 elseif strcmp(type,'1')
     pos(1,:)=[0 0 1 1];
     visible={'on','off','off','off'};
+elseif strcmp(type,'3')
+    pos(1:3,:)=[0.1 0.6 0.3 0.3;0.6 0.6 0.3 0.3;0.25 0 0.5 0.5];
+    visible={'on','on','on','off'};
 elseif strcmp(type,'1x2')
     pos(1:2,:)=[0 0 0.5 1;0.5 0 0.5 1];
     visible={'on','on','off','off'};

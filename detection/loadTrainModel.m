@@ -1,6 +1,8 @@
-function opts=loadTrainModel(datasetName)
+function opts=loadTrainModel(varargin)
 %%loadTrainModel;
-opts=allParameter(datasetName);
+datasetName=varargin{1};
+if nargin==2,opts=allParameter(datasetName,varargin{2});
+else,opts=allParameter(datasetName);end;
 if exist(opts.dtsetOpts.pDenPath,'file')
     load(opts.dtsetOpts.pDenPath);opts.pDen=pDen;
 end

@@ -62,7 +62,7 @@ handles.saveReminderCounter = 0;
 handles.name_append='';
 handles.path2Folder=get(handles.folderPath,'String');
 % handles.matfile=fullfile('..','matfile','groundtruth.mat');
-handles.matfile=fullfile('..','crescent_dataset','crescentTest.mat');
+handles.matfile=fullfile('..','crescent_dataset','crescentTrain.mat');
 % handles.matfile=fullfile('..','matfile','newOriData_anh.mat');
 if (exist(handles.matfile,'file'))
     load(handles.matfile);

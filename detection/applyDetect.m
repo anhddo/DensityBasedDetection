@@ -14,7 +14,6 @@ if ~exist(opts.resultOpts.resultFile,'file')
         elseif strcmp(opts.resultOpts.methodName,'PLS')
             [time,boxes]=plsDetect(img,opts);
         elseif strcmp(opts.resultOpts.methodName,'DenBasedNoPls')
-            opts.idx=idx;
             [time,boxes]=denDetectNoPls(img,opts);
         end
         fprintf('image %d, time:%f\n',imgRange(imgIdx),time);
