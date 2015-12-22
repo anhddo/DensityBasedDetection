@@ -23,7 +23,7 @@ end
 function opts=init(datasetName,datasetDirName,gtName,gtTestName)
 mainDir=fullfile('.');
 datasetDir=fullfile(mainDir,datasetDirName);
-matDir=fullfile(mainDir,'matfile');
+matDir=fullfile(mainDir,datasetDirName,'matfile');
 if ~exist(matDir,'dir');mkdir(matDir);end;
 gtFile=fullfile(datasetDirName,gtName);
 if exist(gtFile,'file')==2,load(gtFile); gtFile=newOriData;end;

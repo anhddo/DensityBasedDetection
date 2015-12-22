@@ -12,7 +12,6 @@ thumbfile=fullfile(dtsetOpts.framesDir,'Thumbs.db');
 if exist(thumbfile,'file'), delete(thumbfile);end;
 
 H=128; W=64; cellSize=8; xstep=32;ystep=64;
-% gtFile=fullfile(datasetDir,'vivoTrainGt.mat');
 
 %pGen: crop pedestrian paramter for hogsvm
 trainPosDir=fullfile(dtsetOpts.datasetDir,'trainPosCrop');

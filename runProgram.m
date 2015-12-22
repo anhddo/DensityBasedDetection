@@ -1,11 +1,13 @@
 initPath;
-if ispc,
-    trainFolder=fullfile('density','train');
-    cd(trainFolder);
-    if ~exist(fullfile('maxsubarray2D.mexw64'))
-        mex maxsubarray2D.cpp;
-    end
-    cd(fullfile('..','..'));
+denTrainFolder=fullfile('density','train');
+if ispc
+    maxSubArrayFile=fullfile(denTrainFolder,'maxsubarray2D.mexw64');
+elseif isunix
+    maxSubArrayFile=fullfile(denTrainFolder,'maxsubarray2D.mexa64');
 end
-datasetTrain('mall');
+if ~exist(maxSubArrayFile,'file')
+    mexFile=fullfile(denTrainFolder,'maxsubarray2D.cpp');
+    mex(mexFile);
+end
+compareResult;
 demoGUI;

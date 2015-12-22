@@ -6,7 +6,7 @@ compareResult1('vivo1');
 compareResult1('crescent');
 end
 function compareResult1(datasetName)
-% calcBestDensityModel(datasetName,false);
+calcBestDensityModel(datasetName,false);
 args48=struct('plsPad',48);
 args32=struct('plsPad',32);
 datasetTrain(datasetName,args32);
@@ -23,21 +23,6 @@ optsList{2}.pDetect.fineThreshold=-0.2;
 
 optsList{3}=createParameter(datasetName,'DenBasedNoPls','pad48',args48);
 optsList{3}.pDetect.fineThreshold=-0.2;
-% optsList{3}.pDetect.threshold=-1;
-% applyDetect(optsList{3});
-
-% optsList{4}=createParameter(datasetName,'DenBased','pad32',args32);
-% optsList{4}.pDetect.fineThreshold=-0.2;
-% optsList{4}.pDetect.threshold=-1;
-% applyDetect(optsList{4});
-% 
-% optsList{5}=createParameter(datasetName,'PLS','pad32',args32);
-% optsList{5}.pDetect.fineThreshold=-0.2;
-% applyDetect(optsList{5});
-% 
-% optsList{6}=createParameter(datasetName,'DenBasedNoPls','pad32',args32);
-% optsList{6}.pDetect.fineThreshold=-0.2;
-% optsList{6}.pDetect.threshold=-1;
 
 for i=1:numel(optsList)
     applyDetect(optsList{i});
@@ -52,11 +37,9 @@ load(optsList{1}.resultOpts.avgTimeFile);denTime=avgtime;
 load(optsList{2}.resultOpts.avgTimeFile);plsTime=avgtime;
 load(optsList{3}.resultOpts.avgTimeFile);noplsTime=avgtime;
 figure;
-h(1)=bar(gca,[denTime plsTime noplsTime],'r','BarWidth',0.5);
-set(gca,'XTickLabel',{'Proposed method','PLS','no PLS'});
+bar([denTime plsTime noplsTime],'r','BarWidth',0.5);
+set(gca,'XTickLabel',{'DenBased','PLS','DenBased(non-PLS)'});
 hold on;
-h(2)=bar(gca,2,plsTime,'g','BarWidth',0.5);
-h(3)=bar(gca,2,noplsTime,'g','BarWidth',0.5);
 ylabel('Time(s)');
 print(fullfile(optsList{1}.resultOpts.resultPath,'time.png'),'-dpng');
 end
@@ -86,7 +69,7 @@ methodName=varargin{2};
 strName=varargin{3};
 if nargin==4,opts=loadTrainModel(datasetName,varargin{4});
 else,opts=loadTrainModel(datasetName);end;
-resultPath=fullfile(opts.dtsetOpts.datasetDir,'result');
+resultPath=fullfile('result',datasetName);
 if ~exist(resultPath,'dir'),mkdir(resultPath);end;
 resultName=strcat(datasetName,methodName,strName);
 sharePath=fullfile(resultPath,resultName);

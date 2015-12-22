@@ -71,7 +71,9 @@ function drawPls(figureObject,dispStuff,axesObj)
 %%
 boxes=dispStuff.plsDrawingStuff;
 candidateBox=boxes.canBox;
+candidateBox=bbApply('resize',candidateBox,1,0,0.5);
 plsBox=boxes.plsBox;
+plsBox=bbApply('resize',plsBox,1,0,0.5);
 [subIm,left,top,~,~]=extractAreaContainBothBox(20);
 scale=size(dispStuff.img,1)/size(subIm,1);
 subIm=imResample(subIm,scale);
@@ -251,9 +253,7 @@ elseif dispPls
     end
 elseif isDispDetect(figureObject)
     setAxesPos('1',figureObject);
-    drawOrinalImg(figureObject,1,dispStuff.img);
-    if isDetectBox(figureObject),drawBox(figureObject,1,dispStuff.bbs,'b');end;
-    if isGtBox(figureObject),drawBox(figureObject,1,getGtBox(figureObj),'r');end;
+    drawDetect(figureObject,1,dispStuff);
 end
 end
 function drawDetect(figureObj,axesId,dispStuff)
