@@ -6,8 +6,9 @@ elseif isunix
     maxSubArrayFile=fullfile(denTrainFolder,'maxsubarray2D.mexa64');
 end
 if ~exist(maxSubArrayFile,'file')
-    mexFile=fullfile(denTrainFolder,'maxsubarray2D.cpp');
-    mex(mexFile);
+    cd(denTrainFolder);
+    mex maxsubarray2D.cpp;
+    cd(fullfile('..','..'));
 end
-compareResult;
+testDataset;
 demoGUI;

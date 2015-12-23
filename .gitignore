@@ -4,14 +4,3 @@
 !background.jpg
 !*.m
 !*.fig
-!mall_dataset/groundtruth.mat
-!mall_dataset/gt1801-2000.mat
-!mall_dataset/chooseImgTrain.mat
-!mall_dataset/denTrainGT.mat
-!mall_dataset/plsPatchTrain.mat
-!vivodataset/vivoTrainGt.mat
-!vivodataset/vivoTrainDensityGt.mat
-!vivo_dataset1/*.mat
-vivo_dataset1/perspective.mat
-!crescent_dataset/*.mat
-

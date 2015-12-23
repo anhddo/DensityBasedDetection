@@ -6,6 +6,6 @@ if nargin==2
 else
     opts=allParameter(dataset);
 end
-calcBestDensityModel(opts,false);
+calcBestDensityModel(dataset,false);
 trainSVMModel(opts);
 plsTrain(opts)

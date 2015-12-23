@@ -22,16 +22,16 @@ function varargout = demoGUI(varargin)
 
 % Edit the above text to modify the response to help demo
 
-% Last Modified by GUIDE v2.5 18-Dec-2015 00:45:09
+% Last Modified by GUIDE v2.5 23-Dec-2015 21:37:15
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
-                   'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @demo_OpeningFcn, ...
-                   'gui_OutputFcn',  @demo_OutputFcn, ...
-                   'gui_LayoutFcn',  [] , ...
-                   'gui_Callback',   []);
+    'gui_Singleton',  gui_Singleton, ...
+    'gui_OpeningFcn', @demo_OpeningFcn, ...
+    'gui_OutputFcn',  @demo_OutputFcn, ...
+    'gui_LayoutFcn',  [] , ...
+    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
     gui_State.gui_Callback = str2func(varargin{1});
 end
@@ -53,7 +53,6 @@ function demo_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to demo (see VARARGIN)
 
 % Choose default command line output for demo
-initPath;
 handles.output = hObject;
 dataTag=getChoosedDataset(handles);
 opts=GUIinitData(dataTag);
@@ -76,7 +75,7 @@ switch v
         tag='crescent';
 end
 % --- Outputs from this function are returned to the command line.
-function varargout = demo_OutputFcn(hObject, eventdata, handles) 
+function varargout = demo_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -127,7 +126,10 @@ function isGtBox_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % Hint: get(hObject,'Value') returns toggle state of isGtBox
-start(handles.timer);
+try
+    start(handles.timer);
+catch
+end
 % --- Executes on button press in checkbox3.
 function checkbox3_Callback(hObject, eventdata, handles)
 % hObject    handle to checkbox3 (see GCBO)
@@ -210,7 +212,7 @@ end
 
 % --- Executes when selected object is changed in grouprbtn.
 function grouprbtn_SelectionChangedFcn(hObject, eventdata, handles)
-% hObject    handle to the selected object in grouprbtn 
+% hObject    handle to the selected object in grouprbtn
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 str=get(eventdata.NewValue,'Tag');
@@ -238,9 +240,13 @@ ajustFrameNumber(handles,'inc');
 function ajustFrameNumber(handles,type)
 opts=get(handles.timer,'UserData');
 if strcmp(type,'inc')
-    opts.gui.iFrame=opts.gui.iFrame+opts.gui.framestep;
+    if opts.gui.iFrame+opts.gui.framestep<=numel(opts.dtsetOpts.indexTestFile)
+        opts.gui.iFrame=opts.gui.iFrame+opts.gui.framestep;
+    end
 elseif strcmp(type,'dec')
-    opts.gui.iFrame=opts.gui.iFrame-opts.gui.framestep;
+    if opts.gui.iFrame-opts.gui.framestep>=1
+        opts.gui.iFrame=opts.gui.iFrame-opts.gui.framestep;
+    end
 end
 set(handles.timer,'UserData',opts);
 start(handles.timer);
@@ -287,7 +293,7 @@ end
 
 % --- Executes when selected object is changed in dataset.
 function dataset_SelectionChangedFcn(hObject, eventdata, handles)
-% hObject    handle to the selected object in dataset 
+% hObject    handle to the selected object in dataset
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
@@ -330,13 +336,13 @@ function densityBasedrbtn_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of densityBasedrbtn
 
 
-% --- Executes on button press in isPLSBased.
-function isPLSBased_Callback(hObject, eventdata, handles)
-% hObject    handle to isPLSBased (see GCBO)
+% --- Executes on button press in plsBasedrbtn.
+function plsBasedrbtn_Callback(hObject, eventdata, handles)
+% hObject    handle to plsBasedrbtn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hint: get(hObject,'Value') returns toggle state of isPLSBased
+% Hint: get(hObject,'Value') returns toggle state of plsBasedrbtn
 
 
 % --- Executes on button press in isDetectBox.
@@ -369,3 +375,12 @@ function densityBasedNonPLSrbtn_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of densityBasedNonPLSrbtn
+
+
+% --- Executes on button press in isRealTime.
+function isRealTime_Callback(hObject, eventdata, handles)
+% hObject    handle to isRealTime (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of isRealTime

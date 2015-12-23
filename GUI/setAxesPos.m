@@ -20,7 +20,7 @@ elseif strcmp(type,'1')
     pos(1,:)=[0 0 1 1];
     visible={'on','off','off','off'};
 elseif strcmp(type,'3')
-    pos(1:3,:)=[0.1 0.6 0.3 0.3;0.6 0.6 0.3 0.3;0.25 0 0.5 0.5];
+    pos(1:3,:)=[0.1 0.6 0.3 0.3;0.6 0.6 0.3 0.3;0.25 0.0 0.5 0.5];
     visible={'on','on','on','off'};
 elseif strcmp(type,'1x2')
     pos(1:2,:)=[0 0 0.5 1;0.5 0 0.5 1];
@@ -33,10 +33,10 @@ elseif strcmp(type,'pls')
     visible={'on','on','off','off'};
 end
 for i=1:nAxes
+    cla(handles.axesObjs(i));
     set(handles.axesObjs(i),'Position',pos(i,:));
     set(handles.axesObjs(i),'Visible',visible{i});
     legend(handles.axesObjs(i),'off');
     xlabel(handles.axesObjs(i),''); ylabel(handles.axesObjs(i),'');
-    cla(handles.axesObjs(i));
 end
 guidata(hObject,handles);

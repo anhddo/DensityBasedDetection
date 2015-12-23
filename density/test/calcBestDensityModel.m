@@ -124,7 +124,7 @@ elseif strcmp(datasetName,'vivo1')
 %          4 5 50;
 %          1 4 300000;
 %          1 4 1000;
-        ];
+%         ];
 elseif strcmp(datasetName,'crescent')
     trainSettings=[4 4 2000];
 %     trainSettings=[
