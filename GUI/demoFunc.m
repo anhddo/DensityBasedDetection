@@ -2,15 +2,23 @@ function demoFunc(obj,evt,figureObj)
 setLayout(figureObj);
 opts=getTimerData(figureObj);
 img=getDatasetImg(opts,getFrameId(opts));
-if isRealTime(figureObj)
-    [time,bbs,dispStuff]=detectImage(figureObj);
+
+if isShowResult(figureObj)
+    optsList=createOptsList(opts.datasetName);
+    prDraw(optsList,{'r','g','b'},getAxes(figureObj,1));
+    timeDraw(optsList,getAxes(figureObj,2));
+    stopTimer(figureObj);
 else
-    [time,bbs,dispStuff]=reRun(figureObj);
+    if isRealTime(figureObj)
+        [time,bbs,dispStuff]=detectImage(figureObj);
+    else
+        [time,bbs,dispStuff]=reRun(figureObj);
+    end
+    dispStuff.bbs=bbs; dispStuff.img=img;
+    updateTimePerIm(figureObj,time);
+    demoDraw(figureObj,dispStuff);
+    updateFrameIdOnGUI(figureObj);
 end
-dispStuff.bbs=bbs; dispStuff.img=img;
-updateTimePerIm(figureObj,time);
-demoDraw(figureObj,dispStuff);
-updateFrameIdOnGUI(figureObj);
 end
 
 function [time,bbs,dispStuff]=detectImage(figureObj)
@@ -114,8 +122,12 @@ dispNoiseReduce=get(handles.noiserbtn,'Value');
 dispClust=get(handles.clustrbtn,'Value');
 dispPls=get(handles.plsrbtn,'Value');
 end
+function v=isShowResult(figureObj)
+handles=guidata(figureObj);
+v=get(handles.isShowResult,'Value');
+end
 function setLayout(figureObj)
-if isStepByStep(figureObj)
+if isStepByStep(figureObj)||isShowResult(figureObj)
     setAxesPos('2x1',figureObj);
 else
     setAxesPos('3',figureObj);
@@ -220,15 +232,15 @@ function setAxesLimWithImg(axesObj,img)
 set(axesObj,'Xlim',[0 size(img,2)]);
 set(axesObj,'Ylim',[0 size(img,1)]);
 end
-function drawOrinalImg(figureObj,axesId,img)
-setAxesLimWithImg(getAxes(figureObj,axesId),img);
-imshow(img,'Parent',getAxes(figureObj,axesId));
+function drawImgOnAxes(axesObj,img)
+setAxesLimWithImg(axesObj,img);
+imshow(img,'Parent',axesObj);
 end
-function drawBox(figureObj,axesIdx,bbs,egdeColor)
-hold(getAxes(figureObj,axesIdx),'on');
+function drawBox(axesObj,bbs,egdeColor)
+hold(axesObj,'on');
 for i=1:size(bbs,1)
     bb=bbs(i,1:4);
-    rectangle('Position',bb,'Parent',getAxes(figureObj,axesIdx),'EdgeColor',egdeColor);
+    rectangle('Position',bb,'Parent',axesObj,'EdgeColor',egdeColor);
 end
 end
 function v=isGtBox(figureObj)
@@ -278,14 +290,15 @@ end
 end
 
 function drawDetect(figureObj,axesId,dispStuff)
-drawOrinalImg(figureObj,axesId,dispStuff.img);
-if isDetectBox(figureObj),drawBox(figureObj,axesId,dispStuff.bbs,'b');end;
-if isGtBox(figureObj),drawBox(figureObj,axesId,getGtBox(figureObj),'r');end;
+axesObj=getAxes(figureObj,axesId);
+drawImgOnAxes(axesObj,dispStuff.img);
+if isDetectBox(figureObj),drawBox(axesObj,dispStuff.bbs,'b');end;
+if isGtBox(figureObj),drawBox(axesObj,getGtBox(figureObj),'r');end;
 end
 
 function demoDraw(figureObj,dispStuff)
 if isStepByStep(figureObj)
-    drawOrinalImg(figureObj,2,dispStuff.img);
+    drawImgOnAxes(figureObj,2,dispStuff.img);
     drawStepOption(figureObj,dispStuff);
 else
     drawEstimationGraph(figureObj);
@@ -295,7 +308,36 @@ end
 if isAutorun(figureObj)
     increaseIFrame(figureObj);
 else
-    handles=guidata(figureObj);
+    stopTimer(figureObj);
+end
+end
+
+function stopTimer(figureObj)
+handles=guidata(figureObj);
     stop(handles.timer);
 end
+
+function timeDraw(optsList,axesObj)
+load(optsList{1}.resultOpts.avgTimeFile);denTime=avgtime;
+load(optsList{2}.resultOpts.avgTimeFile);plsTime=avgtime;
+load(optsList{3}.resultOpts.avgTimeFile);noplsTime=avgtime;
+bar(axesObj,[denTime plsTime noplsTime],'r','BarWidth',0.5);
+set(axesObj,'XTickLabel',{'DenBased','PLS','DenBased(non-PLS)'});
+hold(axesObj,'on');
+ylabel(axesObj,'Time(s)');
+end
+function prDraw(optsList,drawOpts,axesObj)
+for i=1:numel(optsList)
+    opts=optsList{i};
+    [recall,precision]=PRplot(opts);
+    hold(axesObj,'on');
+    plot(precision,recall,drawOpts{i},'LineWidth',2,'Parent',axesObj);
+end
+xlabel(axesObj,'precision'); ylabel(axesObj,'recall');
+legend(axesObj,'DenBased','PLS','Denbase NoPls','Location','southwest');
+end
+function [recall,precision]=PRplot(opts)
+[gt,dt]=bbGt('loadAll',opts.resultOpts.gtTextFolder,opts.resultOpts.detectBox);
+[gt,dt] = bbGt('evalRes',gt,dt,0.3);
+[recall,precision,~,~] = bbGt('compRoc',gt,dt,0);
 end

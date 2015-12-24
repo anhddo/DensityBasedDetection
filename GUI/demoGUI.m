@@ -22,7 +22,7 @@ function varargout = demoGUI(varargin)
 
 % Edit the above text to modify the response to help demo
 
-% Last Modified by GUIDE v2.5 23-Dec-2015 21:37:15
+% Last Modified by GUIDE v2.5 24-Dec-2015 11:31:56
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -384,3 +384,12 @@ function isRealTime_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of isRealTime
+
+
+% --- Executes on button press in isShowResult.
+function isShowResult_Callback(hObject, eventdata, handles)
+% hObject    handle to isShowResult (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of isShowResult

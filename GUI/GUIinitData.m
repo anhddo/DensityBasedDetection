@@ -10,7 +10,7 @@ end
 gui.timePerIm=[]; gui.denEst=[];
 opts.gui=gui;
 
-reRun=testDataset(datasetName);
+reRun=createOptsList(datasetName);
 load(reRun{1}.resultOpts.resultFile);
 opts.reRun.denPls=result;
 load(reRun{2}.resultOpts.resultFile);
