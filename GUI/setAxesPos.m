@@ -33,10 +33,10 @@ elseif strcmp(type,'pls')
     visible={'on','on','off','off'};
 end
 for i=1:nAxes
-    cla(handles.axesObjs(i));
+    cla(handles.axesObjs(i),'reset');
     set(handles.axesObjs(i),'Position',pos(i,:));
     set(handles.axesObjs(i),'Visible',visible{i});
-    legend(handles.axesObjs(i),'off');
-    xlabel(handles.axesObjs(i),''); ylabel(handles.axesObjs(i),'');
+%     legend(handles.axesObjs(i),'off');
+%     xlabel(handles.axesObjs(i),''); ylabel(handles.axesObjs(i),'');
 end
 guidata(hObject,handles);

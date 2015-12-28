@@ -2,18 +2,10 @@ function optsList=createOptsList(datasetName)
 args48=struct('plsPad',48);
 % args32=struct('plsPad',32);
 % datasetTrain(datasetName,args32);
-
-optsList{1}=createParameter(datasetName,'DenBased','pad48',args48);
-optsList{1}.pDetect.fineThreshold=-0.2;
-% optsList{1}.pDetect.threshold=-2;
-% applyDetect(optsList{1});
-
-optsList{2}=createParameter(datasetName,'PLS','pad48',args48);
-optsList{2}.pDetect.fineThreshold=-0.2;
-% applyDetect(optsList{2});
-
-optsList{3}=createParameter(datasetName,'DenBasedNoPls','pad48',args48);
-optsList{3}.pDetect.fineThreshold=-0.2;
+optsList={};
+optsList{end+1}=createParameter(datasetName,'DenBased','pad48',args48);
+optsList{end+1}=createParameter(datasetName,'DenBasedNoPls','pad48',args48);
+optsList{end+1}=createParameter(datasetName,'PLS','pad48',args48);
 end
 
 function opts=createParameter(varargin)
@@ -21,7 +13,7 @@ datasetName=varargin{1};
 methodName=varargin{2};
 strName=varargin{3};
 if nargin==4,opts=loadTrainModel(datasetName,varargin{4});
-else,opts=loadTrainModel(datasetName);end;
+else opts=loadTrainModel(datasetName);end;
 resultPath=fullfile('result',datasetName);
 if ~exist(resultPath,'dir'),mkdir(resultPath);end;
 resultName=strcat(datasetName,methodName,strName);

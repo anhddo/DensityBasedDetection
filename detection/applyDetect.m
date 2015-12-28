@@ -7,6 +7,7 @@ if ~exist(opts.resultOpts.resultFile,'file')
     isDenBased=strcmp(opts.resultOpts.methodName,'DenBased');
     isPls=strcmp(opts.resultOpts.methodName,'PLS');
     isDenBasedNoPls=strcmp(opts.resultOpts.methodName,'DenBasedNoPls');
+    disp(opts.resultOpts.methodName);
     for idx=1:totalImg
         imgIdx=imgRange(idx);
         img=getDatasetImg(opts,imgIdx);

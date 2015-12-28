@@ -91,7 +91,9 @@ if strcmp(datasetName,'mall')
 %         4 5 20000; 4 5 25000; 4 5 30000; 4 4 20000;
 %         ];
 elseif strcmp(datasetName,'vivo1') 
-            trainSettings=[8 10 4000];
+            trainSettings=[4 4 2000;4 4 4000;4 4 1000;
+                4 4 500;4 5 2000;4 5 4000;4 4 8000;
+                ];
 %         trainSettings=[
 %         8 5 100;8 10 100; 8 15 100;
 % %         4 20 100; 4 5 200; 4 5 300;
@@ -126,7 +128,7 @@ elseif strcmp(datasetName,'vivo1')
 %          1 4 1000;
 %         ];
 elseif strcmp(datasetName,'crescent')
-    trainSettings=[4 4 2000];
+    trainSettings=[4 4 2000;8 4 2000;4 4 4000;4 4 1000];
 %     trainSettings=[
 %         4 5 100;4 10 100; 4 15 100;
 % %         4 20 100; 4 5 200; 4 5 300;

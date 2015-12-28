@@ -14,8 +14,8 @@ reRun=createOptsList(datasetName);
 load(reRun{1}.resultOpts.resultFile);
 opts.reRun.denPls=result;
 load(reRun{2}.resultOpts.resultFile);
-opts.reRun.pls=result;
-load(reRun{1}.resultOpts.resultFile);
 opts.reRun.denNoPls=result;
+load(reRun{3}.resultOpts.resultFile);
+opts.reRun.pls=result;
 end
 

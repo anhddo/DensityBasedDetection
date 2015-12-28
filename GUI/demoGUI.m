@@ -22,7 +22,7 @@ function varargout = demoGUI(varargin)
 
 % Edit the above text to modify the response to help demo
 
-% Last Modified by GUIDE v2.5 24-Dec-2015 11:31:56
+% Last Modified by GUIDE v2.5 28-Dec-2015 15:13:37
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -314,6 +314,7 @@ handles.timer=timer('ExecutionMode','fixedSpacing','Period',0.001,...
     'TimerFcn',{@demoFunc,hObject},'UserData',opts,'Tag','Timer');
 % Update handles structure
 guidata(hObject, handles);
+start(handles.timer);
 % --- Executes during object creation, after setting all properties.
 function datasetPopup_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to datasetPopup (see GCBO)
@@ -393,3 +394,11 @@ function isShowResult_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of isShowResult
+
+
+% --- Executes when selected object is changed in methodbuttongroup.
+function methodbuttongroup_SelectionChangedFcn(hObject, eventdata, handles)
+% hObject    handle to the selected object in methodbuttongroup 
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+start(handles.timer);

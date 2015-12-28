@@ -2,7 +2,6 @@ function demoFunc(obj,evt,figureObj)
 setLayout(figureObj);
 opts=getTimerData(figureObj);
 img=getDatasetImg(opts,getFrameId(opts));
-
 if isShowResult(figureObj)
     optsList=createOptsList(opts.datasetName);
     prDraw(optsList,{'r','g','b'},getAxes(figureObj,1));
@@ -184,7 +183,7 @@ result=getReRunResult(figureObj);
 estCount=cat(2,result.estCount{:});
 iFrame=opts.gui.iFrame;
 plot1=estCount(1:iFrame);
-if numel(estCount)>opts.gui.plotEstRange
+if numel(plot1)>opts.gui.plotEstRange
     plot1=plot1(end-opts.gui.plotEstRange:end);
 end
 plot(axesObj,plot1,'b','LineWidth',lw);
@@ -298,7 +297,7 @@ end
 
 function demoDraw(figureObj,dispStuff)
 if isStepByStep(figureObj)
-    drawImgOnAxes(figureObj,2,dispStuff.img);
+    drawImgOnAxes(getAxes(figureObj,2),dispStuff.img);
     drawStepOption(figureObj,dispStuff);
 else
     drawEstimationGraph(figureObj);
@@ -321,20 +320,34 @@ function timeDraw(optsList,axesObj)
 load(optsList{1}.resultOpts.avgTimeFile);denTime=avgtime;
 load(optsList{2}.resultOpts.avgTimeFile);plsTime=avgtime;
 load(optsList{3}.resultOpts.avgTimeFile);noplsTime=avgtime;
-bar(axesObj,[denTime plsTime noplsTime],'r','BarWidth',0.5);
-set(axesObj,'XTickLabel',{'DenBased','PLS','DenBased(non-PLS)'});
+set(axesObj,'XTick',0:3);
+bar(axesObj,1,denTime,'r');
+hold(axesObj,'on');
+bar(axesObj,2,noplsTime,'g');
+hold(axesObj,'on');
+bar(axesObj,3,plsTime,'b');
+hold(axesObj,'on');
+set(axesObj,'XTickLabel',{'DenBased(with PLS)','Denbase(non-PLS)','PLS Based'});
 hold(axesObj,'on');
 ylabel(axesObj,'Time(s)');
 end
 function prDraw(optsList,drawOpts,axesObj)
+cla(axesObj,'reset');
+set(axesObj,'Xlim',[0 1]);
+set(axesObj,'Ylim',[0 1]);
+set(axesObj,'XTick',0:0.05:1);
+set(axesObj,'YTick',0:0.05:1);
 for i=1:numel(optsList)
     opts=optsList{i};
     [recall,precision]=PRplot(opts);
     hold(axesObj,'on');
-    plot(precision,recall,drawOpts{i},'LineWidth',2,'Parent',axesObj);
+    plot(axesObj,precision,recall,drawOpts{i},'LineWidth',2);
 end
+set(axesObj,'XGrid','on');
+set(axesObj,'YGrid','on');
+
 xlabel(axesObj,'precision'); ylabel(axesObj,'recall');
-legend(axesObj,'DenBased','PLS','Denbase NoPls','Location','southwest');
+legend(axesObj,'DenBased(with PLS)','Denbase(non-PLS)','PLS Based','Location','southwest');
 end
 function [recall,precision]=PRplot(opts)
 [gt,dt]=bbGt('loadAll',opts.resultOpts.gtTextFolder,opts.resultOpts.detectBox);

@@ -12,7 +12,7 @@ if ~exist(opts.dtsetOpts.pDenPath,'file')
         Forest=TreeBagger(opts.pDen.nTrees,X,Y,'method','regression','NVarToSample','all','minLeaf',opts.pDen.minLeaf);
         Forest=Forest.compact();
         Forest=Forest.Trees;
-%         save(opts.dtsetOpts.forestPath,'Forest');
+        save(opts.dtsetOpts.forestPath,'Forest');
     end
     
     opts.pDen.Forest=Forest; clear Forest;
