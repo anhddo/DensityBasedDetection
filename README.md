@@ -1,6 +1,6 @@
 # DensityBasedDetection
 [![IMAGE ALT TEXT HERE](https://i.ytimg.com/vi/99etHIX_TXs/2.jpg)]
-(https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE)
+(https://www.youtube.com/watch?v=99etHIX_TXs&feature=youtu.be)
 
 email: anhddo93@gmail.com
 
